@@ -10,3 +10,10 @@ Duplicate assignment as Line  85.
 
 G4: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/StakingFundsVault.sol#L177
 Not necessary since L176 would have reverted. 
+
+G5: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L85
+Change it to
+```
+ accumulatedETHPerLPShare =  accumulatedETHPerLPShare + (unprocessed * PRECISION) / _numOfShares;
+
+```
