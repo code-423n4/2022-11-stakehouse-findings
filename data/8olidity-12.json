@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "8olidity",
+  "risk": "2",
+  "title": "The number of `batchDepositETHForStaking()` should determine `idleETH`",
+  "issueId": 12,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/12"
+}
