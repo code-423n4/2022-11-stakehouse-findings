@@ -1,24 +1,26 @@
+# Gas
+
 
 | | issue |
 | ----------- | ----------- |
-| 1 | [State variables only set in the constructor should be declared immutable.](#) |
-| 2 | [state variables can be packed into fewer storage slots](#) |
-| 3 | [Multiple address/ID mappings can be combined into a single mapping of an address/ID to a struct, where appropriate](#) |
-| 4 | [state variables should be cached in stack variables rather than re-reading them from storage](#) |
-| 5 | [Add `unchecked {}` for subtractions where the operands cannot underflow because of a previous `require()` or `if` statement](#) |
-| 6 | [`<x> += <y>` costs more gas than `<x> = <x> + <y>` for state variables](#) |
-| 7 | [not using the named return variables when a function returns, wastes deployment gas](#) |
-| 8 | [can make the variable outside the loop to save gas](#) |
-| 9 | [`++i/i++` should be `unchecked{++i}/unchecked{i++}` when it is not possible for them to overflow, as is the case when used in for-loop and while-loops](#) |
-| 10 | [require()/revert() strings longer than 32 bytes cost extra gas](#) |
-| 11 | [splitting require() statements that use `&&` saves gas](#) |
-| 12 | [using `calldata` instead of `memory` for read-only arguments in external functions saves gas](#) |
-| 13 | [internal functions only called once can be inlined to save gas](#) |
-| 14 | [internal or private functions not called by the contract or inherited ones should be removed to save deployment gas](#) |
-| 15 | [bytes constants are more efficient than string constants](#) |
-| 16 | [public functions not called by the contract should be declared external instead](#) |
-| 17 | [should use arguments instead of state variable](#) |
-| 18 | [Don’t compare boolean expressions to boolean literals](#) |
+| 1 | [State variables only set in the constructor should be declared immutable.](#1-state-variables-only-set-in-the-constructor-should-be-declared-immutable) |
+| 2 | [state variables can be packed into fewer storage slots](#2-state-variables-can-be-packed-into-fewer-storage-slots) |
+| 3 | [Multiple address/ID mappings can be combined into a single mapping of an address/ID to a struct, where appropriate](#3-multiple-addressid-mappings-can-be-combined-into-a-single-mapping-of-an-addressid-to-a-struct-where-appropriate) |
+| 4 | [state variables should be cached in stack variables rather than re-reading them from storage](#4-state-variables-should-be-cached-in-stack-variables-rather-than-re-reading-them-from-storage) |
+| 5 | [Add `unchecked {}` for subtractions where the operands cannot underflow because of a previous `require()` or `if` statement](#5-add-unchecked--for-subtractions-where-the-operands-cannot-underflow-because-of-a-previous-require-or-if-statement) |
+| 6 | [`<x> += <y>` costs more gas than `<x> = <x> + <y>` for state variables](#6-x--y-costs-more-gas-than-x--x--y-for-state-variables) |
+| 7 | [not using the named return variables when a function returns, wastes deployment gas](#7-not-using-the-named-return-variables-when-a-function-returns-wastes-deployment-gas) |
+| 8 | [can make the variable outside the loop to save gas](#8-can-make-the-variable-outside-the-loop-to-save-gas) |
+| 9 | [`++i/i++` should be `unchecked{++i}/unchecked{i++}` when it is not possible for them to overflow, as is the case when used in for-loop and while-loops](#9-ii-should-be-uncheckediuncheckedi-when-it-is-not-possible-for-them-to-overflow-as-is-the-case-when-used-in-for-loop-and-while-loops) |
+| 10 | [require()/revert() strings longer than 32 bytes cost extra gas](#10-requirerevert-strings-longer-than-32-bytes-cost-extra-gas) |
+| 11 | [splitting require() statements that use `&&` saves gas](#11-splitting-require-statements-that-use--saves-gas) |
+| 12 | [using `calldata` instead of `memory` for read-only arguments in external functions saves gas](#12-using-calldata-instead-of-memory-for-read-only-arguments-in-external-functions-saves-gas) |
+| 13 | [internal functions only called once can be inlined to save gas](#13-internal-functions-only-called-once-can-be-inlined-to-save-gas) |
+| 14 | [internal or private functions not called by the contract or inherited ones should be removed to save deployment gas](#14-internal-or-private-functions-not-called-by-the-contract-or-inherited-ones-should-be-removed-to-save-deployment-gas) |
+| 15 | [bytes constants are more efficient than string constants](#15-bytes-constants-are-more-efficient-than-string-constants) |
+| 16 | [public functions not called by the contract should be declared external instead](#16-public-functions-not-called-by-the-contract-should-be-declared-external-instead) |
+| 17 | [should use arguments instead of state variable](#17-should-use-arguments-instead-of-state-variable) |
+| 18 | [Don’t compare boolean expressions to boolean literals](#18-dont-compare-boolean-expressions-to-boolean-literals) |
 
 ## 1. State variables only set in the constructor should be declared immutable.
 
