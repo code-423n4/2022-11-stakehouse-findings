@@ -1,26 +1,24 @@
 
-# QA
-
 | | issue |
 | ----------- | ----------- |
-| 1 | [typo](#) |
-| 2 | [use of floating pragma](#) |
-| 3 | [event is missing indexed fields](#) |
-| 4 | [_safemint() should be used rather than _mint() wherever possible](#) |
-| 5 | [constants should be defined rather than using magic numbers](#) |
-| 6 | [require check will always be false!](#) |
-| 7 | [state var should be constant](#) |
-| 8 | [lines are too long](#) |
-| 9 | [open todos](#) |
-| 10 | [Outdated compiler version](#) |
-| 11 | [incorrect functions visibility](#) |
-| 12 | [2**<n> - 1 should be re-written as type(uint<n>).max](#) |
-| 13 | [Use a solidity version of at least 0.8.12 to get string.concat() to be used instead of abi.encodePacked(<str>,<str>)](#) |
-| 14 | [Unused/empty receive()/fallback() function](#) |
-| 15 | [Use Underscores for Number Literals](#) |
-| 16 | [Constant redefined elsewhere](#) |
-| 17 | [Duplicated require()/revert() checks should be refactored to a modifier or function](#) |
-| 18 | [abi.encodePacked() should not be used with dynamic types when passing the result to a hash function such as keccak256()](#) |
+| 1 | [typo](#1-typo) |
+| 2 | [use of floating pragma](#2-use-of-floating-pragma) |
+| 3 | [event is missing indexed fields](#3-event-is-missing-indexed-fields) |
+| 4 | [_safemint() should be used rather than _mint() wherever possible](#4-_safemint-should-be-used-rather-than-_mint-wherever-possible) |
+| 5 | [constants should be defined rather than using magic numbers](#5-constants-should-be-defined-rather-than-using-magic-numbers) |
+| 6 | [require check will always be false!](#6-require-check-will-always-be-false) |
+| 7 | [state var should be constant](#7-state-var-should-be-constant) |
+| 8 | [lines are too long](#8-lines-are-too-long) |
+| 9 | [open todos](#9-open-todos) |
+| 10 | [Outdated compiler version](#10-outdated-compiler-version) |
+| 11 | [incorrect functions visibility](#11-incorrect-functions-visibility) |
+| 12 | [2**<n> - 1 should be re-written as type(uint<n>).max](#12-2---1-should-be-re-written-as-typeuintmax) |
+| 13 | [Use a solidity version of at least 0.8.12 to get string.concat() to be used instead of abi.encodePacked(<str>,<str>)](#13-use-a-solidity-version-of-at-least-0812-to-get-stringconcat-to-be-used-instead-of-abiencodepacked) |
+| 14 | [Unused/empty receive()/fallback() function](#14-unusedempty-receivefallback-function) |
+| 15 | [Use Underscores for Number Literals](#15-use-underscores-for-number-literals) |
+| 16 | [Constant redefined elsewhere](#16-constant-redefined-elsewhere) |
+| 17 | [Duplicated require()/revert() checks should be refactored to a modifier or function](#17-duplicated-requirerevert-checks-should-be-refactored-to-a-modifier-or-function) |
+| 18 | [abi.encodePacked() should not be used with dynamic types when passing the result to a hash function such as keccak256()](#18-abiencodepacked-should-not-be-used-with-dynamic-types-when-passing-the-result-to-a-hash-function-such-as-keccak256) |
 
 ## 1. typo 
 
