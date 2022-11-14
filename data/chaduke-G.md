@@ -17,3 +17,7 @@ Change it to
  accumulatedETHPerLPShare =  accumulatedETHPerLPShare + (unprocessed * PRECISION) / _numOfShares;
 
 ```
+
+G6. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/StakingFundsVault.sol#L62-L64
+The definition of ``totalShares`` should be defined in the parent contract ``SyndicateRewardsProcessor``. In this way, ``_updateAccumulatedETHPerLP(totalShares)`` does not need any argument and function ``updateAccumulatedETHPerLP()`` can be eliminated. This will save gas due to less passing of a state variable as argument and one less level of call.
+
