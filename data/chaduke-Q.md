@@ -19,4 +19,9 @@ GA3: In ``LiquidStakingManager.sol#L805``, in many occasions, it calls the ``exe
 
 GA4: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L343
 A node runner should be able to withdraw all the balance in the smart wallet instead of a fix 4eth in case some more ETH has been sent to the smart wallet by accident. 
+
+GA5: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L829
+`sETH` was received in this line from the stakehouse to the smartWallet first, then transferred to the LiquidStakingManger, and then finally transferred to the syndicate in the account of the smartwallet. The accounting can be done more efficiently, by receiving the `sETH` to the syndicate directly and then gives credit to the corresponding smartwallet/blsPubickey directly. 
+
+
  
