@@ -36,3 +36,26 @@ G10. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e
 cache ``getSlotRegistry()`` as a state variable in ``Syndicate.sol``, it appears 12 times in the file.
 
 G11. cache ``getStakeHouseUniverse()`` as it appears six times in ``Syndicate.sol``.
+
+G12, ``https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L948
+Inline ``_updateDAORevenueCommission()`` to ``updateDAORevenueCommission()`` to save gas.
+
+G13. cache ``getTransactionRouter()`` as it occurs six times in ``LiquidStakingManager.sol``.
+
+G14. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L289
+cache smartWalletRepresentative[smartWallet] to a memory variable to save gas.
+
+G15 do no compare a bool to true or false 
+for example
+https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L688
+```
+require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
+require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network");
+
+```
+should be
+```
+require(isNodeRunnerWhitelisted[_nodeRunner],  "Invalid node runner");
+require(!isNodeRunnerBanned(msg.sender), "Node runner is banned from LSD network");
+
+```
