@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "0xdeadbeef0x",
+  "risk": "2",
+  "title": "Giant pools cannot receive ETH from vaults",
+  "issueId": 74,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/74"
+}
