@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "perseverancesuccess",
+  "risk": "3",
+  "title": "Malicious user can steal all ETH balance  of the GiantMevAndFeesPool by calling batchDepositETHForStaking using fake _stakingFundsVault ",
+  "issueId": 61,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/61"
+}
