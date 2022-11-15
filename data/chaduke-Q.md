@@ -16,4 +16,7 @@ It should be
 
 GA3: In ``LiquidStakingManager.sol#L805``, in many occasions, it calls the ``execute()`` function in the smart wall to call a function in the ``getTransctionRouter()''. It might be better to define that function (or a wrapper) in OwnableSmartWallet explicit and call it instead.
 
+
+GA4: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L343
+A node runner should be able to withdraw all the balance in the smart wallet instead of a fix 4eth in case some more ETH has been sent to the smart wallet by accident. 
  
