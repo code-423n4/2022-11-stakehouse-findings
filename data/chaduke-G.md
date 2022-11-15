@@ -71,3 +71,9 @@ function updateDerivativesMinted(totalNewDerivatives) external onlyManager {
         totalShares = totalShares + totalNewDerivatives;
     }
 ```
+
+G18: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L770
+change it to
+``
+stakedKnotsOfSmartWallet[smartWallet] =  stakedKnotsOfSmartWallet[smartWallet] + 1;
+``
