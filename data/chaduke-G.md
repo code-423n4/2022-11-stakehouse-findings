@@ -83,3 +83,12 @@ G19: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e
 
 G20 .https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L882
 It can be defined as a constant. 
+
+G21: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L225-L227
+Change them to
+```
+            totalFreeFloatingShares = totalFreeFloatingShares+_sETHAmount;
+            sETHTotalStakeForKnot[_blsPubKey] = sETHTotalStakeForKnot[_blsPubKey]+_sETHAmount;
+            sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] = sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf]+_sETHAmount;
+
+```
