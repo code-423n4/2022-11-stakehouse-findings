@@ -59,3 +59,15 @@ require(isNodeRunnerWhitelisted[_nodeRunner],  "Invalid node runner");
 require(!isNodeRunnerBanned(msg.sender), "Node runner is banned from LSD network");
 
 ```
+
+G16. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L301-L333
+This block calculates the ``unclaimedUserShare`` for each ``_blsPubKey`` and then sends it to the recipient respectively. It would be gas saving to sum up all the  ``unclaimedUserShare`` for all ``_blsPubKey`` and then send the total ``unclaimedUserShare`` to the recipient in one call. 
+
+G17. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L625
+Function ``stakingFundsVault.updateDerivativesMinted()`` is called within a for loop so that the additional derivative minted can be updated for each knot. To save gas, one can calcualte to the ``totalNewDerivatives`` first, and then call ``stakingFundsVault.updateDerivativesMinted(totalNewDerivatives`)``. Of course, this will need a slight revision to the impelementation of ``stakingFundsVault.updateDerivativesMinted(`` as follows:
+
+```
+function updateDerivativesMinted(totalNewDerivatives) external onlyManager {
+        totalShares = totalShares + totalNewDerivatives;
+    }
+```
