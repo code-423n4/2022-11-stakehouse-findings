@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "HE1M",
+  "risk": "3",
+  "title": "Rotating `LPTokens` to banned BLS public key",
+  "issueId": 64,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/64"
+}
