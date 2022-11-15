@@ -80,3 +80,6 @@ stakedKnotsOfSmartWallet[smartWallet] =  stakedKnotsOfSmartWallet[smartWallet] +
 
 G19: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L880
 ``IERC20 sETH`` should be cached as a state variable to avoid repeated computation at least twice.
+
+G20 .https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L882
+It can be defined as a constant. 
