@@ -24,3 +24,12 @@ The definition of ``totalShares`` should be defined in the parent contract ``Syn
 G7: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L685
 This function only checks msg.sender, so it cannot be zero. Eliminate this line. 
 
+G8: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/StakingFundsVault.sol#L355
+change the argument to calldata to save gas ``bytes[] calldata _blsPubKeys``
+
+G9. 
+Cache ``getAccountManager()`` as a state variable in ``StakingFundsVault.sol`` to save gas. It appears six times in the file.
+
+G10. Cache ``liquidStakingNetworkManager.syndicate()`` in a state variable - it appears six time sin the file ``StakingFundsVault.sol``.
+
+G10. 
