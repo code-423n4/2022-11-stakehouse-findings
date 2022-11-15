@@ -32,4 +32,7 @@ Cache ``getAccountManager()`` as a state variable in ``StakingFundsVault.sol`` t
 
 G10. Cache ``liquidStakingNetworkManager.syndicate()`` in a state variable - it appears six time sin the file ``StakingFundsVault.sol``.
 
-G10. 
+G10. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L232
+cache ``getSlotRegistry()`` as a state variable in ``Syndicate.sol``, it appears 12 times in the file.
+
+G11. cache ``getStakeHouseUniverse()`` as it appears six times in ``Syndicate.sol``.
