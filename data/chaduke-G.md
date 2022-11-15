@@ -92,3 +92,10 @@ Change them to
             sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] = sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf]+_sETHAmount;
 
 ```
+
+G22: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L232
+cache ``IERC20 sETH`` as a state variable. 
+
+G33. https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L275
+The total of ``_sETHAmount`` can be calculated first instead of sending ``sETH`` individually, one can send them in one call to save gas.
+
