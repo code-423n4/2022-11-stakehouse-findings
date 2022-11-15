@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "HE1M",
+  "risk": "3",
+  "title": "Losing the remaining fund that is less than `MIN_STAKING_AMOUNT`",
+  "issueId": 55,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/55"
+}
