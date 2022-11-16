@@ -75,60 +75,66 @@ I suggest wrapping with an `unchecked` block here:
     File contracts/liquid-staking/SyndicateRewardsProcessor.sol, line 85:     accumulatedETHPerLPShare += (unprocessed * PRECISION) / _numOfShares;
     File contracts/liquid-staking/SyndicateRewardsProcessor.sol, line 94:     return address(this).balance + totalClaimed;
 
-    File contracts/liquid-staking/Syndicate.sol, line 225 - 228:     
+    File contracts/syndicate/Syndicate.sol, line 185:     accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed);
+
+    File contracts/syndicate/Syndicate.sol, line 189 - 190:     
+                        uint256 collateralizedUnprocessed = ((totalEthPerSlotType - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+                        accumulatedETHPerCollateralizedSlotPerKnot += collateralizedUnprocessed;
+
+    File contracts/syndicate/Syndicate.sol, line 225 - 228:     
                         totalFreeFloatingShares += _sETHAmount;
                         sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;
                         sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] += _sETHAmount;
                         sETHUserClaimForKnot[_blsPubKey][_onBehalfOf] = (_sETHAmount * accumulatedETHPerFreeFloatingShare) / PRECISION;
 
-    File contracts/liquid-staking/Syndicate.sol, line 269:     totalFreeFloatingShares -= _sETHAmount;
-    File contracts/liquid-staking/Syndicate.sol, line 272 - 273:     
+    File contracts/syndicate/Syndicate.sol, line 269:     totalFreeFloatingShares -= _sETHAmount;
+    File contracts/syndicate/Syndicate.sol, line 272 - 273:     
                         sETHTotalStakeForKnot[_blsPubKey] -= _sETHAmount;
                         sETHStakedBalanceForKnot[_blsPubKey][msg.sender] -= _sETHAmount;
 
-    File contracts/liquid-staking/Syndicate.sol, line 312:     uint256 unclaimedUserShare = userShare - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][msg.sender];
-    File contracts/liquid-staking/Syndicate.sol, line 317:     totalClaimed += unclaimedUserShare;
-    File contracts/liquid-staking/Syndicate.sol, line 366:     uint256 userShare = (accumulatedETHPerShare * stakedBal) / PRECISION;
-    File contracts/liquid-staking/Syndicate.sol, line 369:     return userShare - sETHUserClaimForKnot[_blsPubKey][_user];
-    File contracts/liquid-staking/Syndicate.sol, line 378:     return ethPerKnot / 2;
-    File contracts/liquid-staking/Syndicate.sol, line 393 - 395:     
+    File contracts/syndicate/Syndicate.sol, line 312:     uint256 unclaimedUserShare = userShare - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][msg.sender];
+    File contracts/syndicate/Syndicate.sol, line 317:     totalClaimed += unclaimedUserShare;
+    File contracts/syndicate/Syndicate.sol, line 366:     uint256 userShare = (accumulatedETHPerShare * stakedBal) / PRECISION;
+    File contracts/syndicate/Syndicate.sol, line 369:     return userShare - sETHUserClaimForKnot[_blsPubKey][_user];
+    File contracts/syndicate/Syndicate.sol, line 378:     return ethPerKnot / 2;
+    File contracts/syndicate/Syndicate.sol, line 393 - 395:     
                     uint256 userShare = (updatedAccumulatedETHPerFreeFloatingShare * stakedBal) / PRECISION;
 
                     return userShare - sETHUserClaimForKnot[_blsPubKey][_staker];
 
-    File contracts/liquid-staking/Syndicate.sol, line 406 - 409:     
+    File contracts/syndicate/Syndicate.sol, line 406 - 409:     
                     uint256 accumulatedSoFar = accumulatedETHPerCollateralizedSlotPerKnot
                                 + ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
 
                     uint256 unprocessedForKnot = accumulatedSoFar - totalETHProcessedPerCollateralizedKnot[_blsPubKey];
 
-    File contracts/liquid-staking/Syndicate.sol, line 430:     currentAccrued +=
+    File contracts/syndicate/Syndicate.sol, line 430:     currentAccrued +=
                         balance * unprocessedForKnot / (4 ether - currentSlashedAmount);
 
-    File contracts/liquid-staking/Syndicate.sol, line 437:     return currentAccrued - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][_staker];
-    File contracts/liquid-staking/Syndicate.sol, line 460:     return accumulatedETHPerCollateralizedSlotPerKnot + ethSinceLastUpdate;
-    File contracts/liquid-staking/Syndicate.sol, line 465:     return address(this).balance + totalClaimed;
-    File contracts/liquid-staking/Syndicate.sol, line 493:     uint256 unprocessedETHForCurrentKnot =
+    File contracts/syndicate/Syndicate.sol, line 437:     return currentAccrued - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][_staker];
+    File contracts/syndicate/Syndicate.sol, line 460:     return accumulatedETHPerCollateralizedSlotPerKnot + ethSinceLastUpdate;
+    File contracts/syndicate/Syndicate.sol, line 465:     return address(this).balance + totalClaimed;
+    File contracts/syndicate/Syndicate.sol, line 493:     uint256 unprocessedETHForCurrentKnot =
                     accumulatedETHPerCollateralizedSlotPerKnot - totalETHProcessedPerCollateralizedKnot[_blsPubKey];
-    File contracts/liquid-staking/Syndicate.sol, line 521:     accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] +=
+    File contracts/syndicate/Syndicate.sol, line 521:     accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] +=
                             balance * unprocessedETHForCurrentKnot / (4 ether - currentSlashedAmount);
-    File contracts/liquid-staking/Syndicate.sol, line 540:     uint256 collateralizedSLOTShareOfETHPerKnot = (collateralizedSLOTShareOfETH / numberOfRegisteredKnots);
-    File contracts/liquid-staking/Syndicate.sol, line 546:     return (_ethSinceLastUpdate * PRECISION) / (numberOfRegisteredKnots * 4 ether);
-    File contracts/liquid-staking/Syndicate.sol, line 551:     return totalFreeFloatingShares > 0 ? (_ethSinceLastUpdate * PRECISION) / totalFreeFloatingShares : 0;
-    File contracts/liquid-staking/Syndicate.sol, line 558:     numberOfRegisteredKnots += knotsToRegister;
-    File contracts/liquid-staking/Syndicate.sol, line 621 - 624:     
+    File contracts/syndicate/Syndicate.sol, line 540:     uint256 collateralizedSLOTShareOfETHPerKnot = (collateralizedSLOTShareOfETH / numberOfRegisteredKnots);
+    File contracts/syndicate/Syndicate.sol, line 546:     return (_ethSinceLastUpdate * PRECISION) / (numberOfRegisteredKnots * 4 ether);
+    File contracts/syndicate/Syndicate.sol, line 551:     return totalFreeFloatingShares > 0 ? (_ethSinceLastUpdate * PRECISION) / totalFreeFloatingShares : 0;
+    File contracts/syndicate/Syndicate.sol, line 558:     numberOfRegisteredKnots += knotsToRegister;
+    File contracts/syndicate/Syndicate.sol, line 621 - 624:     
                     totalFreeFloatingShares -= sETHTotalStakeForKnot[_blsPublicKey];
 
                     // Total number of registered knots with the syndicate reduces by one
                     numberOfRegisteredKnots -= 1;
 
-    File contracts/liquid-staking/Syndicate.sol, line 658:     totalClaimed += unclaimedUserShare;
-    File contracts/liquid-staking/Syndicate.sol, line 664:     sETHUserClaimForKnot[_blsPubKey][msg.sender] =
+    File contracts/syndicate/Syndicate.sol, line 658:     totalClaimed += unclaimedUserShare;
+    File contracts/syndicate/Syndicate.sol, line 664:     sETHUserClaimForKnot[_blsPubKey][msg.sender] =
                 (accumulatedETHPerShare * sETHStakedBalanceForKnot[_blsPubKey][msg.sender]) / PRECISION;
 
 # 3. [G-3] <X> += <Y> COSTS MORE GAS THAN <X> = <X> + <Y> FOR STATE VARIABLES
 
-There are 21 instances of this issue:
+There are 23 instances of this issue:
 
     File contracts/liquid-staking/GiantPoolBase.sol, line 57:     idleETH -= _amount;
 
@@ -144,27 +150,31 @@ There are 21 instances of this issue:
     File contracts/liquid-staking/SyndicateRewardsProcessor.sol, line 65:     totalClaimed += due;
     File contracts/liquid-staking/SyndicateRewardsProcessor.sol, line 85:     accumulatedETHPerLPShare += (unprocessed * PRECISION) / _numOfShares;
     
-    File contracts/liquid-staking/Syndicate.sol, line 225 - 227:     
+    File contracts/syndicate/Syndicate.sol, line 185:     accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed);
+
+    File contracts/syndicate/Syndicate.sol, line 190:     
+                        accumulatedETHPerCollateralizedSlotPerKnot += collateralizedUnprocessed;
+    File contracts/syndicate/Syndicate.sol, line 225 - 227:     
                         totalFreeFloatingShares += _sETHAmount;
                         sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;
                         sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] += _sETHAmount;
                         
-    File contracts/liquid-staking/Syndicate.sol, line 269:     totalFreeFloatingShares -= _sETHAmount;
-    File contracts/liquid-staking/Syndicate.sol, line 272 - 273:     
+    File contracts/syndicate/Syndicate.sol, line 269:     totalFreeFloatingShares -= _sETHAmount;
+    File contracts/syndicate/Syndicate.sol, line 272 - 273:     
                         sETHTotalStakeForKnot[_blsPubKey] -= _sETHAmount;
                         sETHStakedBalanceForKnot[_blsPubKey][msg.sender] -= _sETHAmount;
                         
-    File contracts/liquid-staking/Syndicate.sol, line 317:     totalClaimed += unclaimedUserShare;
+    File contracts/syndicate/Syndicate.sol, line 317:     totalClaimed += unclaimedUserShare;
     
-    File contracts/liquid-staking/Syndicate.sol, line 430:     currentAccrued +=
+    File contracts/syndicate/Syndicate.sol, line 430:     currentAccrued +=
                         balance * unprocessedForKnot / (4 ether - currentSlashedAmount);
                         
-    File contracts/liquid-staking/Syndicate.sol, line 521:     accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] +=
+    File contracts/syndicate/Syndicate.sol, line 521:     accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] +=
     balance * unprocessedETHForCurrentKnot / (4 ether - currentSlashedAmount);
     
-    File contracts/liquid-staking/Syndicate.sol, line 558:     numberOfRegisteredKnots += knotsToRegister;
+    File contracts/syndicate/Syndicate.sol, line 558:     numberOfRegisteredKnots += knotsToRegister;
 
-    File contracts/liquid-staking/Syndicate.sol, line 621:     
+    File contracts/syndicate/Syndicate.sol, line 621:     
                     totalFreeFloatingShares -= sETHTotalStakeForKnot[_blsPublicKey];
                     
-    File contracts/liquid-staking/Syndicate.sol, line 658:     totalClaimed += unclaimedUserShare;
+    File contracts/syndicate/Syndicate.sol, line 658:     totalClaimed += unclaimedUserShare;
