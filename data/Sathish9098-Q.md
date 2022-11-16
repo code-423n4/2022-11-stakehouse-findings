@@ -3,7 +3,7 @@
 
 ### Index event fields make the field more quickly accessible to off-chain tools that parse events. However, note that each index field costs extra gas during emission, so it’s not necessarily best to index the maximum allowed per event (three fields). Each event should use three indexed fields if there are three or more fields, and gas usage is not particularly of concern for the events in question. If there are fewer than three fields, all of the fields should be indexed.
 
-> There are   instances of this issue:
+> There are 6   instances of this issue:
 
 
          FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
@@ -52,7 +52,7 @@
 
 ##
 
-## [4] REQUIRE STATEMENTS THROUGHS WRONG OR MEANING LESS  ERROR COMMANDS 
+## [4] REQUIRE STATEMENTS RETURNS WRONG OR MEANING LESS  ERROR COMMANDS 
 
 > There are   instances of this issue:
 
@@ -128,6 +128,8 @@ Proof Of Concept :
 
 ##  [7]   It is bad practice to use numbers directly in code without explanation . Here 0.5 Ethers directly check with lpTokenETH.balanceOf(msg.sender) .  No explanation about 0.5 ether check . 
 
+> There are 9  instances of this issue:
+
           2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
           116:    require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
@@ -161,7 +163,7 @@ Proof Of Concept :
 
 ## [9]   INTERFACE FILES SHOULD USE FIXED COMPILER VERSIONS, NOT FLOATING ONES
 
-> There are   instances of this issue:
+> There are 6  instances of this issue:
 
           2022-11-stakehouse/contracts/interfaces/IBrandNFT.sol
 
@@ -185,7 +187,7 @@ Proof Of Concept :
 
 ##
 
-## [10]  SPDX-License-Identifier: STATEMENT SHOULD BE DECLARED BEFORE pragma solidity ^0.8.13; DECLARATIONS . IN MANY INTERFACES LICENSE STATEMENT ADDED BEFORE PRAGMA STATEMENT . THE BEST SODE PRACTICE IS license DECLARATIONS BEFORE pragma 
+## [10]  SPDX-License-Identifier: STATEMENT SHOULD BE DECLARED BEFORE pragma solidity ^0.8.13; DECLARATIONS . IN MANY INTERFACES LICENSE STATEMENT DECLARED BEFORE PRAGMA STATEMENT . THE BEST CODE PRACTICE IS license DECLARATIONS BEFORE pragma STATEMENT
 
 > There are   instances of this issue:
 
@@ -237,5 +239,3 @@ Proof Of Concept :
 
 ##
 
-## [12]   
-       
