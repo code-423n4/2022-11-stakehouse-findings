@@ -17,3 +17,14 @@ There are 3 instances of this issue:
     // I suggest code replaced:
                         bool transferResult =  getDETH().transfer(msg.sender, dETHReceivedFromAllSavETHVaults);
                         if (!transferResult) revert TransferFailed();
+
+# 2. [L-2] Check zero denominator
+
+When a division is computed, it must be ensured that the denominator is non-zero to prevent failure of the function call.
+
+Instances include:
+
+    File contracts/syndicate/Syndicate.sol, line 406:     uint256 accumulatedSoFar = accumulatedETHPerCollateralizedSlotPerKnot
+                    + ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+    File contracts/syndicate/Syndicate.sol, line 447:     return ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+    File contracts/syndicate/Syndicate.sol, line 540:     uint256 collateralizedSLOTShareOfETHPerKnot = (collateralizedSLOTShareOfETH / numberOfRegisteredKnots);
