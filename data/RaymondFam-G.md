@@ -66,6 +66,21 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 143:        returns (bool)
 ```
+[Line: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+83:    function depositETHForStaking(bytes calldata _blsPublicKeyOfKnot, uint256 _amount) public payable returns (uint256) {
+
+126:    function burnLPToken(LPToken _lpToken, uint256 _amount) public nonReentrant returns (uint256) {
+
+203:    ) public onlyManager nonReentrant returns (uint256) {
+
+218:    function isBLSPublicKeyPartOfLSDNetwork(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+223:    function isBLSPublicKeyBanned(bytes calldata _blsPublicKeyOfKnot) public view returns (bool) {
+
+228:    function isDETHReadyForWithdrawal(address _lpTokenAddress) external view returns (bool) {
+```
 ## Use Fixed-size `bytes32` instead of `string`
 Fitting your data in fixed-size 32 byte words is much cheaper than using arbitrary-length types (string in this case). Remember that bytes32 uses less gas because it fits in a single EVM word. Typically, any fixed size variable in solidity is cheaper than dynamically sized ones. 
 
@@ -102,6 +117,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 All other modifier instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol#L22-L25
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L49-L52
 
 ## Function Order Affects Gas Consumption
 The order of function will also have an impact on gas consumption. Because in smart contracts, there is a difference in the order of the functions. Each position will have an extra 22 gas. The order is dependent on method ID. So, if you rename the frequently accessed function to more early method ID, you can save gas cost. Please visit the following site for further information:
@@ -165,7 +181,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-walle
 ## Non-strict inequalities are cheaper than strict ones
 In the EVM, there is no opcode for non-strict inequalities (>=, <=) and two operations are performed (> + = or < + =).
 
-As an example, consider replacing `>=` with the strict counterpart `>` in the following instance:
+As an example, consider replacing `>=` with the strict counterpart `>` in the following inequality instance:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantPoolBase.sol#L35
 
@@ -194,6 +210,24 @@ All other `>=` instances entailed:
 
 127:        require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
 ```
+[Line: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+127:        require(_amount >= MIN_STAKING_AMOUNT, "Amount cannot be zero");
+
+161:                require(dETHBalance >= 24 ether, "Nothing to withdraw");
+
+204:        require(_amount >= 24 ether, "Amount cannot be less than 24 ether");
+
+205:        require(address(this).balance >= _amount, "Insufficient withdrawal amount");
+```
+Similarly, as an example, consider replacing `<=` with the strict counterpart `<` in the following inequality instance:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L128
+
+```
+        require(_amount < _lpToken.balanceOf(msg.sender) + 1, "Not enough balance");
+```
 ## += and -= Costs More Gas
 `+=` generally costs 22 more gas than writing out the assigned equation explicitly. The amount of gas wasted can be quite sizable when repeatedly operated in a loop.
 
@@ -204,6 +238,10 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 ```
         idleETH = idleETH + msg.value;
 ```
+All other `+=` instances entailed:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L71
+
 Similarly, as an example, the following `-=` instance entailed may be refactored as follows:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantPoolBase.sol#L57
@@ -245,6 +283,9 @@ All other for loop instances entailed:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L42-L59
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L78-L102
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L146-L157
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L63-L73
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L103-L106
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L116-L118
 
 ## calldata and memory
 When running a function we could pass the function parameters as calldata or memory for variables such as strings, bytes, structs, arrays etc. If we are not modifying the passed parameter, we should pass it as calldata because calldata is more gas efficient than memory.
@@ -274,4 +315,16 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-walle
 
         bool statusChanged = isTransferApproved[from][to] != status;
         isTransferApproved[from][to] = status; // F: [OSW-2]
+```
+## Avoid Boolean Expressions Comparison to Boolean Literals in Conditional Checks
+You will save deployment gas by not comparing boolean expressions to boolean literals in the `if` or `require` statements.
+
+Here are the two instances entailed:
+
+[File: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+64:            require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network");
+
+84:        require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key is banned or not a part of LSD network");
 ```
