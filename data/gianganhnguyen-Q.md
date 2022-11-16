@@ -24,7 +24,10 @@ When a division is computed, it must be ensured that the denominator is non-zero
 
 Instances include:
 
+    File contracts/liquid-staking/SyndicateRewardsProcessor.sol, line 43:     uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);
+
     File contracts/syndicate/Syndicate.sol, line 406:     uint256 accumulatedSoFar = accumulatedETHPerCollateralizedSlotPerKnot
                     + ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
     File contracts/syndicate/Syndicate.sol, line 447:     return ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
     File contracts/syndicate/Syndicate.sol, line 540:     uint256 collateralizedSLOTShareOfETHPerKnot = (collateralizedSLOTShareOfETH / numberOfRegisteredKnots);
+    File contracts/syndicate/Syndicate.sol, line 546:     return (_ethSinceLastUpdate * PRECISION) / (numberOfRegisteredKnots * 4 ether);
