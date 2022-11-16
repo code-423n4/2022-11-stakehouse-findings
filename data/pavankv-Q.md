@@ -21,3 +21,6 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L22
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L16
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantPoolBase.sol#L19
+
+3. Variable names that consist of all capital letter should be reserved for const/immutable varaible:-
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L158 
