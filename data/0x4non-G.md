@@ -7,7 +7,7 @@
 - [G-4] Remove unnecesary variable `balance` on [SyndicateRewardsProcessor.sol#L58](https://github.com/code-423n4/2022-11-stakehouse/blob/main/
 - [G-5] Use `unchecked` blocks to save gas
 - [G-6] `++i`/`i++` should be `unchecked{++i}`/`unchecked{i++}` when it is not possible for them to overflow
-
+- [G-7] Functions guaranteed to revert when called by normal users can be marked `payable`
 
 ## Upgrade openzeppelin contract to latest versions
 
@@ -402,3 +402,17 @@ for (uint256 i; i < len;) {
 - [contracts/syndicate/Syndicate.sol:585](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L585)
 - [contracts/syndicate/Syndicate.sol:598](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L598)
 - [contracts/syndicate/Syndicate.sol:648](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L648)
+
+
+## Functions guaranteed to revert when called by normal users can be marked `payable`
+
+On:
+
+- [contracts/smart-wallet/OwnableSmartWallet.sol:41](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L41)
+- [contracts/smart-wallet/OwnableSmartWallet.sol:52](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L52)
+- [contracts/smart-wallet/OwnableSmartWallet.sol:67](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L67)
+- [contracts/smart-wallet/OwnableSmartWallet.sol:114](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L114)
+- [contracts/syndicate/Syndicate.sol:145](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L145)
+- [contracts/syndicate/Syndicate.sol:154](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L154)
+- [contracts/syndicate/Syndicate.sol:161](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L161)
+- [contracts/syndicate/Syndicate.sol:168](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L168)
