@@ -306,15 +306,15 @@ Here are the instances entailed:
 ## State Variables Repeatedly Read Should be Cached
 SLOADs cost 100 gas each after the 1st one whereas MLOADs/MSTOREs only incur 3 gas each. As such, storage values read multiple times should be cached in the stack memory the first time (costing only 1 SLOAD) and then re-read from this cache to avoid multiple SLOADs.
 
-For instance, `_isTransferApproved` could be cached in the code block instance below:
+`_isTransferApproved` could be cached and have the code block instance below refactored:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L131-L132
 
 ```
-        bool isTransferApproved[from][to] =_isTransferApproved[from][to];
+            bool isTransferApproved[from][to] =_isTransferApproved[from][to]; // SLOAD 1
 
-        bool statusChanged = isTransferApproved[from][to] != status;
-        isTransferApproved[from][to] = status; // F: [OSW-2]
+131:        bool statusChanged = isTransferApproved[from][to] != status; // MLOAD 1
+132:        isTransferApproved[from][to] = status; // F: [OSW-2], MLOAD 2
 ```
 ## Avoid Boolean Expressions Comparison to Boolean Literals in Conditional Checks
 You will save deployment gas by not comparing boolean expressions to boolean literals in the `if` or `require` statements.
@@ -327,4 +327,24 @@ Here are the two instances entailed:
 64:            require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network");
 
 84:        require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key is banned or not a part of LSD network");
+```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L149-L152
+
+```
+                require(
+                    vault.isDETHReadyForWithdrawal(address(_lpTokens[i][j])) == false,
+                    "ETH is either staked or derivatives minted"
+                );
+```
+## `abi.encode()` Costs More Gas Than `abi.encodePacked()`
+Changing `abi.encode()` to `abi.encodePacked()` can save gas considering the former pads extra null bytes at the end of the call data, which is unnecessary. Please visit the following the link delineating how `abi.encodePacked()` is more gas efficient in general:
+
+https://github.com/ConnorBlockchain/Solidity-Encode-Gas-Comparison
+
+Here is one instance entailed:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/SyndicateFactory.sol#L63
+
+```
+        return keccak256(abi.encode(_deployer, _contractOwner, _numberOfInitialKnots));
 ```
