@@ -16,6 +16,12 @@
 
          25:   event LPTokenMinted(bytes blsPublicKeyOfKnot, address token, address depositor, uint256 amount);
 
+         2022-11-stakehouse/contracts/liquid-staking/SavETHVault.sol 
+
+         22:     event ETHWithdrawnForStaking(address withdrawalAddress, address liquidStakingManager, uint256 amount);
+
+         19:      event DETHRedeemed(address depositor, uint256 amount);
+
 
 ###
 
@@ -227,10 +233,9 @@ Proof Of Concept :
       
 ##
 
-##  [11]  
+##  [11]  LACK OF ZERO CHECKS FOR NEW ADDRESSES IN FUNCTIONS. THERE ARE MANY FUNCTIONS NOT CHECKING ZERO ADDRESS BEFORE ASSIGNING THE VALUES TO VARIABLES. 
+
+##
+
+## [12]   
        
-
-
-
-
-         
