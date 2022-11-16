@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "aphak5010",
+  "risk": "2",
+  "title": "GiantPool should not check ETH amount on withdrawal",
+  "issueId": 92,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/92"
+}
