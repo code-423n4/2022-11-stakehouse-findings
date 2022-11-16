@@ -120,11 +120,32 @@ Proof Of Concept :
 
 ##
 
-##  [7]   It is bad practice to use numbers directly in code without explanation . Here 0.5 Ethers directly check with lpTokenETH.balanceOf(msg.sender) .  No explanation about 0.5 ether check 
+##  [7]   It is bad practice to use numbers directly in code without explanation . Here 0.5 Ethers directly check with lpTokenETH.balanceOf(msg.sender) .  No explanation about 0.5 ether check . 
 
           2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
           116:    require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
+
+          2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
+
+         127:   require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
+
+        2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+        256:    require(bytes(_newTicker).length >= 3, "String must be 3-5 characters long");
+
+        257:    require(bytes(_newTicker).length <= 5, "String must be 3-5 characters long");
+
+      333:   require(associatedSmartWallet.balance >= 4 ether, "Insufficient balance");
+
+      433:   require(msg.value == len * 4 ether, "Insufficient ether provided");
+
+      431:   require(len >= 1, "No value provided");'
+
+      661:   require(bytes(_stakehouseTicker).length >= 3, "String must be 3-5 characters long");
+      
+      662: require(bytes(_stakehouseTicker).length <= 5, "String must be 3-5 characters long");
+
 
 ## 
 
