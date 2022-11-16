@@ -30,6 +30,32 @@
 
                76:        for (uint256 i; i < amountOfTokens; ++i) {
 
+               2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
+
+              42:      for (uint256 i; i < numOfSavETHVaults; ++i) {
+
+              78:        for (uint256 i; i < numOfVaults; ++i) {
+
+              82:        for (uint256 j; j < _lpTokens[i].length; ++j) { 
+
+             128:       for (uint256 i; i < numOfRotations; ++i) {
+
+            146:        for (uint256 i; i < numOfVaults; ++i) { 
+
+             148:      for (uint256 j; j < _lpTokens[i].length; ++j) { 
+
+             2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+             392:      for(uint256 i; i < _blsPubKeys.length; ++i) { 
+
+            464:        for(uint256 i; i < len; ++i) { 
+
+           537:        for (uint256 i; i < numOfValidators; ++i) { 
+
+           586:       for (uint256 i; i < numOfKnotsToProcess; ++i) { 
+
+            
+
 
 ###
 
@@ -58,7 +84,7 @@ Proof Of Work:
 
 ##
 
-##   [G3]  <X> += <Y> COSTS MORE GAS THAN <X> = <X> + <Y> FOR STATE VARIABLES. SAME FOR  <X> -= <Y> COSTS MORE GAS THAN <X> = <X> - <Y>
+##   [G3]  <X> += <Y> COSTS MORE GAS THAN <X> = <X> + <Y> . SAME FOR  <X> -= <Y> COSTS MORE GAS THAN <X> = <X> - <Y>
 
            FILE : 2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
@@ -69,6 +95,14 @@ Proof Of Work:
          39:    idleETH += msg.value;
 
         57:     idleETH -= _amount;
+
+       46:     idleETH -= transactionAmount;
+
+      2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+       614:     stakedKnotsOfSmartWallet[smartWallet] -= 1; 
+
+       
 
 ##  [G4]   STACK VARIABLE USED AS A CHEAPER CACHE FOR A STATE VARIABLE IS ONLY USED ONCE
 
@@ -92,4 +126,82 @@ Proof Of Work:
               177:  return address(this).balance + totalClaimed - idleETH;
 
               203:  claimed[_user][address(lpTokenETH)] = (accumulatedETHPerLPShare * lpTokenETH.balanceOf(_user)) / PRECISION;
-               
+
+               2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+              409:   (uint256 nodeRunnerAmount, uint256 daoAmount) = _calculateCommission(address(this).balance - balBefore);
+
+##
+
+## [G5]    DON’T COMPARE BOOLEAN EXPRESSIONS TO BOOLEAN LITERALS
+
+###     if (<x> == true) => if (<x>), if (<x> == false) => if (!<x>)
+
+               2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol 
+
+               require(
+                    vault.isDETHReadyForWithdrawal(address(_lpTokens[i][j])) == false, 
+                    "ETH is either staked or derivatives minted"
+                );
+
+              2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+              291:   require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network"); 
+
+            328 :   require(isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key has already withdrawn or not a part of LSD network");
+ 
+            332:    require(isNodeRunnerBanned(nodeRunnerOfSmartWallet[associatedSmartWallet]) == false, "Node runner is banned from LSD 
+             network");
+
+            393:    require(isBLSPublicKeyBanned(_blsPubKeys[i]) == false, "BLS public key is banned or not a part of LSD network"); 
+
+            435:    require(_isNodeRunnerValid(msg.sender) == true, "Unrecognised node runner");  
+
+            436:    require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network"); 
+
+           468:     require(isBLSPublicKeyPartOfLSDNetwork(_blsPublicKey) == false, "BLS public key is banned or not a part of LSD network"); 
+
+          540:       require(isBLSPublicKeyBanned(blsPubKey) == false, "BLS public key is banned or not a part of LSD network");
+
+         588:       require(isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is banned or not a part of LSD network");
+
+        687:         require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
+
+
+          
+ ##
+
+##  [G6]   Instead of using operator && on single require check . Using double require check can save more gas:
+
+               2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+              357:    require(_new != address(0) && _current != _new, "New is zero or current"); 
+
+             371:     if (msg.sender == dao && _wasPreviousNodeRunnerMalicious) { 
+
+Recommended Migration Step : 
+
+             require(_new != address(0),"New is zero");
+
+             require( _current != _new, "New is zero or current"); 
+
+ 
+
+
+##
+
+## [G7]    For || operator don't want to check all conditions . If any one condition true then then the overall condition checks become true. Once one condition is become then other condition checks are waste . Loss more gas for every condition checks after one condition true . 
+
+            2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+           361:  require(_current == msg.sender || dao == msg.sender, "Not current owner or DAO");
+
+           500:   return !isBLSPublicKeyPartOfLSDNetwork(_blsPublicKeyOfKnot) || bannedBLSPublicKeys[_blsPublicKeyOfKnot] != address(0);
+
+Recommended Migration Step : 
+
+           We can use If elseif condition checks to avoid this issue . 
+
+
+
+
