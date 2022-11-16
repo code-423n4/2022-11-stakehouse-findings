@@ -3,12 +3,12 @@
 
 ### In Solidity 0.8+, there’s a default overflow check on unsigned integers. It’s possible to uncheck this in for-loops and save some gas at each iteration, but at the cost of some code readability, as this uncheck cannot be made inline. This saves 30-40 gas per loop
 
-> There are  instances of this issue:
+> There are 19 instances of this issue:
 
 
-               2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
+                2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
 
-               63:    for (uint256 i; i < numOfRotations; ++i) {
+                63:    for (uint256 i; i < numOfRotations; ++i) {
 
                144    numberOfLPTokensIssued++;
 
@@ -30,36 +30,36 @@
 
                76:        for (uint256 i; i < amountOfTokens; ++i) {
 
-               2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
+                2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
 
-              42:      for (uint256 i; i < numOfSavETHVaults; ++i) {
+               42:      for (uint256 i; i < numOfSavETHVaults; ++i) {
 
-              78:        for (uint256 i; i < numOfVaults; ++i) {
+               78:        for (uint256 i; i < numOfVaults; ++i) {
 
-              82:        for (uint256 j; j < _lpTokens[i].length; ++j) { 
+               82:        for (uint256 j; j < _lpTokens[i].length; ++j) { 
 
-             128:       for (uint256 i; i < numOfRotations; ++i) {
+               128:       for (uint256 i; i < numOfRotations; ++i) {
 
-            146:        for (uint256 i; i < numOfVaults; ++i) { 
+              146:        for (uint256 i; i < numOfVaults; ++i) { 
 
-             148:      for (uint256 j; j < _lpTokens[i].length; ++j) { 
+              148:      for (uint256 j; j < _lpTokens[i].length; ++j) { 
 
-             2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+              2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
-             392:      for(uint256 i; i < _blsPubKeys.length; ++i) { 
+              392:      for(uint256 i; i < _blsPubKeys.length; ++i) { 
 
-            464:        for(uint256 i; i < len; ++i) { 
+             464:        for(uint256 i; i < len; ++i) { 
 
-           537:        for (uint256 i; i < numOfValidators; ++i) { 
+             537:        for (uint256 i; i < numOfValidators; ++i) { 
 
-           586:       for (uint256 i; i < numOfKnotsToProcess; ++i) { 
+             586:       for (uint256 i; i < numOfKnotsToProcess; ++i) { 
 
             
 
 
 ###
 
-## [G2]   CAN CHECK MORE FAILURE POSSIBILITY CONDITIONS FIRST INSTEAD OF address(0) CHECK . FOR address(0) CONDITIONS FAILURE POSSIBILITY  IS LESS COMPARE TO OTHER require CONDITION CHECKS . IN THIS WAY WE CAN IGNORE  SOME REQUIRE CONDITION CHECKS .CAN SAVE MORE VOLUME OF THE GAS.  WE CAN CHECK address(0) CHECK IN THE LAST 
+## [G2]   CAN CHECK MORE FAILURE POSSIBILITY CONDITIONS FIRST INSTEAD OF address(0) CHECK . FOR address(0) CONDITIONS FAILURE POSSIBILITY  IS LESS COMPARE TO OTHER require CONDITION CHECKS . IN THIS WAY WE CAN IGNORE  SOME REQUIRE CONDITION CHECKS . CAN SAVE MORE VOLUME OF THE GAS.  WE CAN CHECK address(0) CHECK IN THE LAST 
 
          FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
 
@@ -71,7 +71,7 @@
         require(_oldLPToken.lastInteractedTimestamp(msg.sender) + 30 minutes < block.timestamp, "Liquidity is still fresh");
         require(_amount + _newLPToken.totalSupply() <= 24 ether, "Not enough mintable tokens");
 
-Proof Of Work:  
+>Proof Of Work:  
 
         require(_oldLPToken != _newLPToken, "Incorrect rotation to same token");
         require(_amount >= MIN_STAKING_AMOUNT, "Amount cannot be zero");
@@ -86,29 +86,30 @@ Proof Of Work:
 
 ##   [G3]  <X> += <Y> COSTS MORE GAS THAN <X> = <X> + <Y> . SAME FOR  <X> -= <Y> COSTS MORE GAS THAN <X> = <X> - <Y>
 
+> There are 5 instances of this issue:
+
            FILE : 2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
           40:   idleETH -= _ETHTransactionAmounts[i];
 
           2022-11-stakehouse/contracts/liquid-staking/GiantPoolBase.sol
 
-         39:    idleETH += msg.value;
+          39:    idleETH += msg.value;
 
-        57:     idleETH -= _amount;
+         57:     idleETH -= _amount;
 
-       46:     idleETH -= transactionAmount;
+         46:     idleETH -= transactionAmount;
 
-      2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+        2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
-       614:     stakedKnotsOfSmartWallet[smartWallet] -= 1; 
+        614:     stakedKnotsOfSmartWallet[smartWallet] -= 1; 
 
-       
+ ##      
 
-##  [G4]   STACK VARIABLE USED AS A CHEAPER CACHE FOR A STATE VARIABLE IS ONLY USED ONCE
+##  [G4]   lpTokenETH   State variable can be cached with local stack variables. It will save the gas fee
 
-###     lpTokenETH  can be catched with local address variable. 
 
-               2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
+                 2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
                 _distributeETHRewardsToUserForToken(
                 msg.sender,
@@ -119,7 +120,9 @@ Proof Of Work:
          
    ## 
 
-## [G4]  ADD UNCHECKED {} FOR ARITHMATIC OPERATIONS WHERE THE OPERANDS CANNOT UNDERFLOW            
+##   [G5]  ADD UNCHECKED {} FOR ARITHMATIC OPERATIONS WHERE THE OPERANDS CANNOT UNDERFLOW        
+
+> There are 3 instances of this issue:    
 
               2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
@@ -133,9 +136,11 @@ Proof Of Work:
 
 ##
 
-## [G5]    DON’T COMPARE BOOLEAN EXPRESSIONS TO BOOLEAN LITERALS
+##   [G6]    DON’T COMPARE BOOLEAN EXPRESSIONS TO BOOLEAN LITERALS
 
 ###     if (<x> == true) => if (<x>), if (<x> == false) => if (!<x>)
+
+> There are 14 instances of this issue:   
 
                2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol 
 
@@ -163,15 +168,17 @@ Proof Of Work:
 
           540:       require(isBLSPublicKeyBanned(blsPubKey) == false, "BLS public key is banned or not a part of LSD network");
 
-         588:       require(isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is banned or not a part of LSD network");
+          588:       require(isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is banned or not a part of LSD network");
 
-        687:         require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
+         687:         require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
 
 
           
  ##
 
-##  [G6]   Instead of using operator && on single require check . Using double require check can save more gas:
+##  [G7]   Instead of using operator && on single require check . Using double require check can save more gas:
+
+> There are 2 instances of this issue: 
 
                2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
@@ -190,7 +197,9 @@ Recommended Migration Step :
 
 ##
 
-## [G7]    For || operator don't want to check all conditions . If any one condition true then then the overall condition checks become true. Once one condition is become then other condition checks are waste . Loss more gas for every condition checks after one condition true . 
+## [G8]    For || operator don't want to check all conditions . If any one condition true then the overall condition checks become true. Once one condition is true then no need to check remaining conditions. Loss more gas for every condition checks after one condition is  true . 
+
+> There are 2 instances of this issue: 
 
             2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
@@ -198,9 +207,25 @@ Recommended Migration Step :
 
            500:   return !isBLSPublicKeyPartOfLSDNetwork(_blsPublicKeyOfKnot) || bannedBLSPublicKeys[_blsPublicKeyOfKnot] != address(0);
 
-Recommended Migration Step : 
 
-           We can use If elseif condition checks to avoid this issue . 
+
+
+##  [G9]  FUNCTIONS GUARANTEED TO REVERT WHEN CALLED BY NORMAL USERS CAN BE MARKED PAYABLE
+
+###  If a function modifier such as onlyDeployer is used, the function will revert if a normal user tries to pay the function. Marking the function as payable will lower the gas cost for legitimate callers because the compiler will not include checks for whether a payment was provided. The extra opcodes avoided are CALLVALUE(2),DUP1(3),ISZERO(3),PUSH2(3),JUMPI(10),PUSH1(3),DUP1(3),REVERT(0),JUMPDEST(1),POP(2), which costs an average of about 21 gas per call to the function, in addition to the extra deployment cost.
+
+> There are 2 instances of this issue: 
+
+         2022-11-stakehouse/contracts/liquid-staking/LPToken.sol
+
+        function mint(address _recipient, uint256 _amount) external onlyDeployer {
+        _mint(_recipient, _amount);
+         }
+
+         /// @notice Allows a LP token owner to burn their tokens
+        function burn(address _recipient, uint256 _amount) external onlyDeployer {
+         _burn(_recipient, _amount);
+        }
 
 
 
