@@ -317,3 +317,17 @@ Here are the instances entailed:
 
 116:        for (uint256 i; i < numOfTokens; ++i) {
 ```
+## Un-indexed Parameters in Events
+Consider indexing parameters for events, serving as logs filter when looking for specifically wanted data. Up to three parameters in an event function can receive the attribute `indexed` which will cause the respective arguments to be treated as log topics instead of data.
+
+Here are the instances entailed:
+
+[File: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+19:    event DETHRedeemed(address depositor, uint256 amount);
+
+22:    event ETHWithdrawnForStaking(address withdrawalAddress, address liquidStakingManager, uint256 amount);
+
+121:    event CurrentStamp(uint256 stamp, uint256 last, bool isConditionTrue);
+```
