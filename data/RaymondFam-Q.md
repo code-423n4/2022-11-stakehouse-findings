@@ -91,6 +91,17 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 139:    function isTransferApproved(address from, address to)
 ```
+[Line: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+218:    function isBLSPublicKeyPartOfLSDNetwork(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+223:    function isBLSPublicKeyBanned(bytes calldata _blsPublicKeyOfKnot) public view returns (bool) {
+
+228:    function isDETHReadyForWithdrawal(address _lpTokenAddress) external view returns (bool) {
+
+235:    function _init(address _liquidStakingManagerAddress, LPTokenFactory _lpTokenFactory) internal {
+```
 ## Unspecific Compiler Version Pragma
 For most source-units the compiler version pragma is very unspecific ^0.8.13. While this often makes sense for libraries to allow them to be included with multiple different versions of an application, it may be a security risk for the actual application implementation itself. A known vulnerable compiler version may accidentally be selected or security tools might fall-back to an older compiler version ending up actually checking a different EVM compilation that is ultimately deployed on the blockchain.
 
@@ -191,6 +202,7 @@ Here are some of the instances entailed:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L40
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L46
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LSDNFactory.sol#L35
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L222
 
 ## Modifier for Identical Checks
 Similar/identical require statement used in different functions of the same contract should be grouped into a modifier.
@@ -209,7 +221,7 @@ The use of `block.timestamp` as part of the time checks can be slightly altered 
 
 Consider taking into account this issue and warning the users that such a scenario could happen. If the alteration of timestamps cannot affect the protocol in any way, consider documenting the reasoning and writing tests enforcing that these guarantees will be preserved even if the code changes in the future.
 
-There are a total of two instances entailed:
+There are a total of four instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L44-L45
 
@@ -222,6 +234,11 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 ```
         require(lpTokenETH.lastInteractedTimestamp(msg.sender) + 1 days < block.timestamp, "Too new");
 ```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L141
+
+```
+        bool isStaleLiquidity = _lpToken.lastInteractedTimestamp(msg.sender) + 30 minutes < block.timestamp;
+```
 ## No Storage Gap for Upgradeable Contracts
 Consider adding a storage gap at the end of an upgradeable contract just in case it would entail some child contracts in the future that might introduce new variables. Devoid of a storage gap addition, when the upgradable contract introduces new variables, it may override the variables in the inheriting contract, leading to storage collisions.
 
@@ -230,10 +247,11 @@ Adding the following line of code would ensure no shifting down of storage in th
 ```
     uint256[50] private __gap;
 ```
-Here are the two contract instances entailed:
+Here are the three contract instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol
 
 ## Add a Constructor Initializer
 As per Openzeppelin's recommendation:
@@ -250,10 +268,11 @@ This feature is readily incorporated in the Solidity Wizard since the UUPS vulne
         _disableInitializers();
     }
 ```
-Here are the two contract instances with missing `_disableInitializers()`:
+Here are the three contract instances with missing `_disableInitializers()`:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol#L27-L28
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L24-L25
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L42-L43
 
 ```
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -288,4 +307,13 @@ Here are the instances entailed:
 146:        for (uint256 i; i < numOfVaults; ++i) {
 
 148:            for (uint256 j; j < _lpTokens[i].length; ++j) {
+```
+[Line: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+
+```
+63:        for (uint256 i; i < numOfValidators; ++i) {
+
+103:        for (uint256 i; i < numOfTokens; ++i) {
+
+116:        for (uint256 i; i < numOfTokens; ++i) {
 ```
