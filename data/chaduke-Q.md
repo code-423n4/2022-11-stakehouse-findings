@@ -24,4 +24,5 @@ GA5: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e
 `sETH` was received in this line from the stakehouse to the smartWallet first, then transferred to the LiquidStakingManger, and then finally transferred to the syndicate in the account of the smartwallet. The accounting can be done more efficiently, by receiving the `sETH` to the syndicate directly and then gives credit to the corresponding smartwallet/blsPubickey directly. 
 
 
- 
+ AQ6: https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L356
+This function provides too much power to Dao, if the dao calls the function, then he can be the node runner of each smart wallet and then call `` withdrawETHForKnot`` to drain each smart wallet. 
