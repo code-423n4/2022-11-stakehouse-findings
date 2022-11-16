@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "HE1M",
+  "risk": "3",
+  "title": "Unstaking does not update the mapping `sETHUserClaimForKnot`",
+  "issueId": 90,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/90"
+}
