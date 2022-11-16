@@ -1,0 +1,7 @@
+1.  Don't compare boolean expressions to boolean literals. Use 'require(!isNodeRunnerBanned(msg.sender)' instead of 
+    'require(isNodeRunnerBanned(msg.sender) == false,' in the require (found line 291 of LiquidStakingManager.sol).
+2.  Do not use '+=' ('idleETH += msg.value;', found line 39 in  GiantPoolBase.sol). Instead use "idleETH = idleETH + msg.value;" in order to save some gas.
+3.  Require() string longer than 32 bytes cost extra gas. For exemple, line 122 of ETHPoolLPFactory.sol, the require error string ("Amount exceeds the staking limit for the validator") is 50 bytes long when "Amount > validator staking limit" is 32 bytes long, and therefore cheaper in gas and just as clear.
+4.  Increment 'i' at the end of the loop in 'unchecked' so save gas. 'unchecked { ++i; }' at end of loop instead of 'for (uint256 i; i < numberOfRotations; ++i)'. (found line 63 of ETHPoolLPFactory.sol).
+5.  Use assembly to write storage value. Line 245 in setOracle() of .LiquidStakingManager.sol, instead of "dao = _newAddress;", use  assembly {sstore(dao.slot, _newAddress)} to save gas.
+    6.  Splitting require() that use '&&' saves gas (found line 357 of LiquidStakingManager.sol). (require(_new != address(0) && _current != _new, "New is zero or current");)
