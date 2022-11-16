@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "9svR6w",
+  "risk": "3",
+  "title": "SyndicateRewardsProcessor _distributeETHRewardsToUserForToken sets claimed[] incorrectly, allowing theft of rewards from StakingFundsVault, GiantMevAndFeesPool, and other issues",
+  "issueId": 100,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/100"
+}
