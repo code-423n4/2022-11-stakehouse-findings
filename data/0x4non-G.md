@@ -5,9 +5,11 @@
 - [G-2] State variables that never change should be declared `immutable` or `constant`
 - [G-3] Cache functions inside loops
 - [G-4] Remove unnecesary variable `balance` on [SyndicateRewardsProcessor.sol#L58](https://github.com/code-423n4/2022-11-stakehouse/blob/main/
-- [G-5] Use `unchecked` blocks to save gas
-- [G-6] `++i`/`i++` should be `unchecked{++i}`/`unchecked{i++}` when it is not possible for them to overflow
-- [G-7] Functions guaranteed to revert when called by normal users can be marked `payable`
+- [G-5] Use `X = X + A` is cheaper in gas cost than `X += A`
+- [G-6] Use `unchecked` blocks to save gas
+- [G-7] `++i`/`i++` should be `unchecked{++i}`/`unchecked{i++}` when it is not possible for them to overflow
+- [G-8] Functions guaranteed to revert when called by normal users can be marked `payable`
+
 
 ## Upgrade openzeppelin contract to latest versions
 
@@ -77,7 +79,10 @@ Avoids a Gsset (**20000 gas**) in the constructor, and replaces the first access
 
 While it's not possible to use immutable on Proxy contracts, some variables can be declared as a hard-coded constant and get the same gas savings
 
-Variables that can be declared as immutable;
+Variables that can be declared as `constant`;
+- `MODULO` on [LiquidStakingManager.sol#L158](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L158)
+
+Variables that can be declared as `immutable`;
 - `pool` on [GiantLP.sol#L11](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L11)
 - `transferHookProcessor` on [GiantLP.sol#L14](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L14)
 - `lpTokenImplementation` on [LPTokenFactory.sol#L15](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPTokenFactory.sol#L15)
@@ -273,6 +278,39 @@ index 81be706..79ea19c 100644
                  claimed[_user][_token] = due;
 ```
 
+## Use `X = X + A` is cheaper in gas cost than `X += A`
+
+In the following example (optimizer = 10000) it's possible to demostrate that I = I + X cost less gas than I += X in state variable.
+
+```
+contract Test_Optimization {
+    uint256 a = 1;
+    function Add () external returns (uint256) {
+        a = a + 1;
+        return a;
+    }
+}
+
+contract Test_Without_Optimization {
+    uint256 a = 1;
+    function Add () external returns (uint256) {
+        a += 1;
+        return a;
+    }
+}
+```
+Test_Optimization cost is 26324 gas
+Test_Without_Optimization cost is 26440 gas
+With this optimization it's possible to save 116 gas
+
+
+Lines in the code:
+
+- [StakingFundsVault.sol#L97](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L97)
+- [StakingFundsVault.sol#L278](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L278)
+- [Syndicate.sol#L430-L431](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L430-L431)
+
+
 
 ## Use `unchecked` blocks to save gas
 
@@ -347,6 +385,70 @@ index 81be706..fdbced4 100644
                  require(success, "Failed to transfer");
 ```
 
+On [SyndicateRewardsProcessor.sol#L65](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L65)
+```
+                unchecked { totalClaimed += due; }
+```
+
+On [LiquidStakingManager.sol#L782](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L782) instead of `numberOfKnots += 1;`
+```
+        unchecked { ++numberOfKnots; }
+```
+
+On [GiantPoolBase.sol#L39](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantPoolBase.sol#L39);
+```
+        unchecked { idleETH += msg.value; }
+```
+
+On [LiquidStakingManager.sol#L770](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L770)
+```
+        unchecked { ++stakedKnotsOfSmartWallet[smartWallet]; }
+```
+
+On [LiquidStakingManager.sol#L839](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L839)
+```
+        unchecked { ++numberOfKnots; }
+```
+
+On [StakingFundsVault.sol#L58](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L58)
+```
+        unchecked { totalShares += 4 ether; }
+```
+
+On [StakingFundsVault.sol#L97](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L97)
+```
+            unchecked { totalAmount += amount; }
+```
+
+On [StakingFundsVault.sol#L278](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L278)
+```
+            unchecked { totalAccumulated += previewAccumulatedETH(_user, token); }
+```
+
+On [StakingFundsVault.sol#L287](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L287)
+```
+            unchecked { totalAccumulated += previewAccumulatedETH(_user, _token[i]); }
+```
+
+On [SyndicateRewardsProcessor.sol#L65](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L65)
+```
+                unchecked { totalClaimed += due; }
+```
+
+On [Syndicate.sol#L190](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L190)
+```
+            unchecked { accumulatedETHPerCollateralizedSlotPerKnot += collateralizedUnprocessed; }
+```
+
+On [Syndicate.sol#L225-L228](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L225-L228)
+```
+          unchecked {
+            totalFreeFloatingShares += _sETHAmount;
+            sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;
+            sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] += _sETHAmount;
+            sETHUserClaimForKnot[_blsPubKey][_onBehalfOf] = (_sETHAmount * accumulatedETHPerFreeFloatingShare) / PRECISION;
+          }
+```
 
 ## `++i`/`i++` should be `unchecked{++i}`/`unchecked{i++}` when it is not possible for them to overflow, as in the case when used in for & while loops
 
