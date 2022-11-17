@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "aphak5010",
+  "risk": "2",
+  "title": "GiantMevAndFeesPool.previewAccumulatedETH function: \"accumulated\" variable is not updated correctly in for loop leading to result that is too low",
+  "issueId": 160,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/160"
+}
