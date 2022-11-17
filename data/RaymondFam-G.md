@@ -130,6 +130,23 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 632:    ) internal view returns (uint256) {
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+267:    function updateWhitelisting(bool _changeWhitelist) external onlyDAO returns (bool) {
+
+495:    function isBLSPublicKeyPartOfLSDNetwork(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+500:    function isBLSPublicKeyBanned(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+507:    function isNodeRunnerBanned(address _nodeRunner) public view returns (bool) {
+
+514:    function isKnotDeregistered(bytes calldata _blsPublicKey) public view returns (bool) {
+
+635:    function getNetworkFeeRecipient() external view returns (address) {
+
+684:    function _isNodeRunnerValid(address _nodeRunner) internal view returns (bool) {
+```
 ## Use Fixed-size `bytes32` instead of `string`
 Fitting your data in fixed-size 32 byte words is much cheaper than using arbitrary-length types (string in this case). Remember that bytes32 uses less gas because it fits in a single EVM word. Typically, any fixed size variable in solidity is cheaper than dynamically sized ones. 
 
@@ -145,6 +162,23 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 ```
         string calldata _stakehouseTicker
+```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+54:    event StakehouseCreated(string stakehouseTicker, address indexed stakehouse);
+
+69:    event NetworkTickerUpdated(string newTicker);
+
+111:    string public stakehouseTicker;
+
+180:        string calldata _stakehouseTicker
+
+255:    function updateTicker(string calldata _newTicker) external onlyDAO {
+
+656:        string calldata _stakehouseTicker
+
+789:        string memory lowerTicker = IBrandNFT(brand).toLowerCase(stakehouseTicker);
 ```
 ## Private/Internal Function Embedded Modifier Reduces Contract Size
 Consider having the logic of a modifier embedded through a private (doesn't matter whether or not the contract entails any child contracts since the private visibility saves even more gas on function calls than the internal visibility) function to reduce contract size if need be. 
@@ -168,6 +202,7 @@ All other modifier instances entailed:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol#L22-L25
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L49-L52
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L50-L53
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L160-L163
 
 ## Function Order Affects Gas Consumption
 The order of function will also have an impact on gas consumption. Because in smart contracts, there is a difference in the order of the functions. Each position will have an extra 22 gas. The order is dependent on method ID. So, if you rename the frequently accessed function to more early method ID, you can save gas cost. Please visit the following site for further information:
@@ -253,6 +288,25 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-walle
 
 168:    function updatePriorityStakingBlock(uint256 _endBlock) external onlyOwner {
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+218:    function deRegisterKnotFromSyndicate(bytes[] calldata _blsPublicKeys) external onlyDAO {
+
+230:    ) external onlyDAO {
+
+239:    function updateDAOAddress(address _newAddress) external onlyDAO {
+
+249:    function updateDAORevenueCommission(uint256 _commissionPercentage) external onlyDAO {
+
+255:    function updateTicker(string calldata _newTicker) external onlyDAO {
+
+267:    function updateWhitelisting(bool _changeWhitelist) external onlyDAO returns (bool) {
+
+278:    function updateNodeRunnerWhitelistStatus(address _nodeRunner, bool isWhitelisted) external onlyDAO {
+
+308:    function rotateEOARepresentativeOfNodeRunner(address _nodeRunner, address _newRepresentative) external onlyDAO {
+```
 ## Non-strict inequalities are cheaper than strict ones
 In the EVM, there is no opcode for non-strict inequalities (>=, <=) and two operations are performed (> + = or < + =).
 
@@ -308,6 +362,19 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 240:        require(_amount >= 4 ether, "Amount cannot be less than 4 ether");
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+256:        require(bytes(_newTicker).length >= 3, "String must be 3-5 characters long");
+
+333:        require(associatedSmartWallet.balance >= 4 ether, "Insufficient balance");
+
+432:        require(len >= 1, "No value provided");
+
+662:        require(bytes(_stakehouseTicker).length >= 3, "String must be 3-5 characters long");
+
+936:        require(associatedSmartWallet.balance >= 4 ether, "Smart wallet balance must be at least 4 ether");
+```
 Similarly, as an example, consider replacing `<=` with the strict counterpart `<` in the following inequality instance:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L128
@@ -323,6 +390,15 @@ All other `<=` instances entailed:
 176:        require(_amount <= _lpToken.balanceOf(msg.sender), "Not enough balance");
 
 241:        require(_amount <= address(this).balance, "Not enough ETH to withdraw");
+```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+257:        require(bytes(_newTicker).length <= 5, "String must be 3-5 characters long");
+
+663:        require(bytes(_stakehouseTicker).length <= 5, "String must be 3-5 characters long");
+
+949:        require(_commissionPercentage <= MODULO, "Invalid commission");
 ```
 ## += and -= Costs More Gas
 `+=` generally costs 22 more gas than writing out the assigned equation explicitly. The amount of gas wasted can be quite sizable when repeatedly operated in a loop.
@@ -350,6 +426,9 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L521
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L558
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L658
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L770
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L782
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L839
 
 Similarly, as an example, the following `-=` instance entailed may be refactored as follows:
 
@@ -364,6 +443,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantMevAndFeesPool.sol#L40
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L269-L273
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L621-L624
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L615
 
 ## Unchecked SafeMath Saves Gas
 "Checked" math, which is default in ^0.8.0 is not free. The compiler will add some overflow checks, somehow similar to those implemented by `SafeMath`. While it is reasonable to expect these checks to be less expensive than the current `SafeMath`, one should keep in mind that these checks will increase the cost of "basic math operation" that were not previously covered. This particularly concerns variable increments in for loops. When no arithmetic overflow/underflow is going to happen, `unchecked { ++i ;}` to use the previous wrapping behavior further saves gas just as in the for loop below as an example:
@@ -420,6 +500,10 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L585-L593
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L598-L606
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L648-L679
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L392-L397
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L465-L491
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L538-L570
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L587-L626
 
 ## calldata and memory
 When running a function we could pass the function parameters as calldata or memory for variables such as strings, bytes, structs, arrays etc. If we are not modifying the passed parameter, we should pass it as calldata because calldata is more gas efficient than memory.
@@ -468,6 +552,11 @@ Here are the instances entailed:
 610:    function _deRegisterKnot(bytes memory _blsPublicKey) internal {
 
 631:        bytes memory _blsPublicKey
+```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+879:    function _autoStakeWithSyndicate(address _associatedSmartWallet, bytes memory _blsPubKey) internal {
 ```
 ## State Variables Repeatedly Read Should be Cached
 SLOADs cost 100 gas each after the 1st one whereas MLOADs/MSTOREs only incur 3 gas each. As such, storage values read multiple times should be cached in the stack memory the first time (costing only 1 SLOAD) and then re-read from this cache to avoid multiple SLOADs.
@@ -552,6 +641,85 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 634:        _lastAccumulatedETHPerFreeFloatingShare[_blsPublicKey] > 0 ? // MLOAD 1
  
 635:       _lastAccumulatedETHPerFreeFloatingShare[_blsPublicKey] : MLOAD 2
+```
+`brand` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L789-L797
+
+```
+    address _brand = brand; // SLOAD 1
+
+789:        string memory lowerTicker = IBrandNFT(_brand).toLowerCase(stakehouseTicker); // MLOAD 1
+
+797:                IBrandNFT(_brand).lowercaseBrandTickerToTokenId(lowerTicker), // MLOAD 2
+```
+`stakehouse` could be cached right after it is updated and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L843-L875
+
+```
+    address _stakehouse = stakehouse; // SLOAD 1
+
+843:        IERC20 sETH = IERC20(getSlotRegistry().stakeHouseShareTokens(_stakehouse)); // MLOAD 1
+
+847:            _stakehouse, // MLOAD 2
+
+855:            IStakeHouseRegistry(_stakehouse).setGateKeeper(address(gatekeeper)); // MLOAD 3
+
+875:        emit StakehouseCreated(stakehouseTicker, _stakehouse); // MLOAD 4
+```
+`dao` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L241-L243
+
+```
+    address _dao = dao; // SLOAD 1
+
+241:        require(_newAddress != _dao, "Same address"); // MLOAD 1
+
+243:        emit UpdateDAOAddress(_dao, _newAddress); // MLOAD 2
+```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L361-L371
+
+```
+    address _dao = dao; // SLOAD 1
+
+361:        require(_current == msg.sender || _dao == msg.sender, "Not current owner or DAO"); // MLOAD 1
+
+371:         if (msg.sender == _dao && _wasPreviousNodeRunnerMalicious) { // MLOAD 2
+```
+`gatekeeper` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L854-L856
+
+```
+    address _gatekeeper = gatekeeper; // SLOAD 1
+
+854:        if (address(_gatekeeper) != address(0)) { // MLOAD 1
+
+855:            IStakeHouseRegistry(stakehouse).setGateKeeper(address(_gatekeeper)); // MLOAD 2
+```
+`stakehouseTicker` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L831-L875
+
+```
+    string memory _stakehouseTicker = stakehouseTicker; // SLOAD 1
+
+831:                _stakehouseTicker, // MLOAD 1
+
+875:        emit StakehouseCreated(_stakehouseTicker, stakehouse); // MLOAD 2
+```
+`enableWhitelisting` could be cached right after it is updated and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L270-L272
+
+```
+    bool _enableWhitelisting = enableWhitelisting; // SLOAD 1
+
+270:        emit WhitelistingStatusChanged(msg.sender, _enableWhitelisting); // MLOAD 1
+
+272:        return _enableWhitelisting; // MLOAD 2
 ```
 ## Unneeded State Variable Cache
 The following instances of state variable caches is unnecessary since `currentAccumulatedETHPerFreeFloatingShare`, `updatedAccumulatedETHPerFreeFloatingShare`, and `stakedBal` are only referenced once in the function call.
@@ -657,12 +825,25 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 ## Use Storage Instead of Memory for Structs/Arrays
 A storage pointer is cheaper since copying a state struct in memory would incur as many SLOADs and MSTOREs as there are slots. In another words, this causes all fields of the struct/array to be read from storage, incurring a Gcoldsload (2100 gas) for each field of the struct/array, and then further incurring an additional MLOAD rather than a cheap stack read. As such, declaring the variable with the storage keyword and caching any fields that need to be re-read in stack variables will be much cheaper, involving only Gcoldsload for all associated field reads. Read the whole struct/array into a memory variable only when it is being returned by the function, passed into a function that requires memory, or if the array/struct is being read from another memory array/struct. 
 
-Here is one instance entailed:
+Here are the instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L324
 
 ```
                 bytes[] memory keys = new bytes[](1);
+```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+805:        bytes[] memory _blsPublicKeyOfKnots = new bytes[](1);
+
+859:        address[] memory priorityStakers = new address[](0);
+
+860:        bytes[] memory initialKnots = new bytes[](1);
+
+893:        bytes[] memory stakingKeys = new bytes[](1);
+
+896:        uint256[] memory stakeAmounts = new uint256[](1);
 ```
 ## Use Shift Right Instead of Division
 `x >> y` is equivalent to the mathematical expression `x / 2**y`, rounded towards negative infinity (rounding down). As such `x >> 1` is equivalent to `x / 2**1` which is equal to `x / 2`. Using right shift instead of division saves gas.
