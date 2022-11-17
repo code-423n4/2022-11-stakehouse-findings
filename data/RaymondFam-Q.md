@@ -102,6 +102,38 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 235:    function _init(address _liquidStakingManagerAddress, LPTokenFactory _lpTokenFactory) internal {
 ```
+[File: GiantMevAndFeesPool.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantMevAndFeesPool.sol)
+
+```
+56:    function claimRewards(
+
+82:    function previewAccumulatedETH(
+
+146:    function beforeTokenTransfer(address _from, address _to, uint256) external {
+
+170:    function afterTokenTransfer(address, address _to, uint256) external {
+
+181:    function _onWithdraw(LPToken[] calldata _lpTokens) internal override {
+```
+[File: StakingFundsVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol)
+
+```
+199:    function claimRewards(
+
+274:    function batchPreviewAccumulatedETHByBLSKeys(address _user, bytes[] calldata _blsPubKeys) external view returns (uint256) {
+
+284:    function batchPreviewAccumulatedETH(address _user, LPToken[] calldata _token) external view returns (uint256) {
+
+293:    function previewAccumulatedETH(address _user, LPToken _token) public view returns (uint256) {
+
+315:    function beforeTokenTransfer(address _from, address _to, uint256) external override {
+
+343:    function afterTokenTransfer(address, address _to, uint256) external override {
+
+360:    function _claimFundsFromSyndicateForDistribution(address _syndicate, bytes[] memory _blsPubKeys) internal {
+
+371:    function _init(LiquidStakingManager _liquidStakingNetworkManager, LPTokenFactory _lpTokenFactory) internal virtual {
+```
 ## Unspecific Compiler Version Pragma
 For most source-units the compiler version pragma is very unspecific ^0.8.13. While this often makes sense for libraries to allow them to be included with multiple different versions of an application, it may be a security risk for the actual application implementation itself. A known vulnerable compiler version may accidentally be selected or security tools might fall-back to an older compiler version ending up actually checking a different EVM compilation that is ultimately deployed on the blockchain.
 
@@ -128,6 +160,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVaultDeployer.sol#L14-L16
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L19-L27
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/SyndicateFactory.sol#L16-L18
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantMevAndFeesPool.sol#L17-L20
 
 ## Immutable Variables
 State variables having no setter functions associated and can only be assigned at the constructor should be declared immutable.
@@ -203,6 +236,10 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L46
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LSDNFactory.sol#L35
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L222
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L79
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L114
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L35
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L381
 
 ## Modifier for Identical Checks
 Similar/identical require statement used in different functions of the same contract should be grouped into a modifier.
@@ -239,6 +276,13 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 ```
         bool isStaleLiquidity = _lpToken.lastInteractedTimestamp(msg.sender) + 30 minutes < block.timestamp;
 ```
+[File: StakingFundsVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol)
+
+```
+184:        require(_lpToken.lastInteractedTimestamp(msg.sender) + 30 minutes < block.timestamp, "Too new");
+
+230:            require(token.lastInteractedTimestamp(msg.sender) + 30 minutes < block.timestamp, "Last transfer too recent");
+```
 ## No Storage Gap for Upgradeable Contracts
 Consider adding a storage gap at the end of an upgradeable contract just in case it would entail some child contracts in the future that might introduce new variables. Devoid of a storage gap addition, when the upgradable contract introduces new variables, it may override the variables in the inheriting contract, leading to storage collisions.
 
@@ -252,6 +296,7 @@ Here are the three contract instances entailed:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol
 
 ## Add a Constructor Initializer
 As per Openzeppelin's recommendation:
@@ -273,6 +318,7 @@ Here are the three contract instances with missing `_disableInitializers()`:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol#L27-L28
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L24-L25
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L42-L43
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L122-L123
 
 ```
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -308,7 +354,7 @@ Here are the instances entailed:
 
 148:            for (uint256 j; j < _lpTokens[i].length; ++j) {
 ```
-[Line: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
+[File: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
 
 ```
 63:        for (uint256 i; i < numOfValidators; ++i) {
@@ -316,6 +362,38 @@ Here are the instances entailed:
 103:        for (uint256 i; i < numOfTokens; ++i) {
 
 116:        for (uint256 i; i < numOfTokens; ++i) {
+```
+[File: GiantMevAndFeesPool.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantMevAndFeesPool.sol)
+
+```
+38:        for (uint256 i; i < numOfVaults; ++i) {
+
+64:        for (uint256 i; i < numOfVaults; ++i) {
+
+90:        for (uint256 i; i < _stakingFundsVaults.length; ++i) {
+
+117:        for (uint256 i; i < numOfRotations; ++i) {
+
+135:        for (uint256 i; i < numOfVaults; ++i) {
+
+183:        for (uint256 i; i < _lpTokens.length; ++i) {
+```
+[File: StakingFundsVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol)
+
+```
+78:        for (uint256 i; i < numOfValidators; ++i) {
+
+152:        for (uint256 i; i < numOfTokens; ++i) {
+
+166:        for (uint256 i; i < numOfTokens; ++i) {
+
+203:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+266:        for (uint256 i; i < _blsPublicKeys.length; ++i) {
+
+276:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+286:        for (uint256 i; i < _token.length; ++i) {
 ```
 ## Un-indexed Parameters in Events
 Consider indexing parameters for events, serving as logs filter when looking for specifically wanted data. Up to three parameters in an event function can receive the attribute `indexed` which will cause the respective arguments to be treated as log topics instead of data.
@@ -330,4 +408,50 @@ Here are the instances entailed:
 22:    event ETHWithdrawnForStaking(address withdrawalAddress, address liquidStakingManager, uint256 amount);
 
 121:    event CurrentStamp(uint256 stamp, uint256 last, bool isConditionTrue);
+```
+[File: StakingFundsVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol)
+
+```
+25:    event ETHDeposited(address sender, uint256 amount);
+
+28:    event ETHWithdrawn(address receiver, address admin, uint256 amount);
+
+31:    event ERC20Recovered(address admin, address recipient, uint256 amount);
+
+34:    event WETHUnwrapped(address admin, uint256 amount);
+```
+[File: Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
+
+```
+42:    event UpdateAccruedETH(uint256 unprocessed);
+
+45:    event CollateralizedSLOTReCalibrated(bytes BLSPubKey);
+
+48:    event KNOTRegistered(bytes BLSPubKey);
+
+51:    event KnotDeRegistered(bytes BLSPubKey);
+
+54:    event PriorityStakerRegistered(address indexed staker);
+
+57:    event Staked(bytes BLSPubKey, uint256 amount);
+
+60:    event UnStaked(bytes BLSPubKey, uint256 amount);
+```
+## Empty Event
+The following event has no parameter in it to emit anything. Consider refactoring or removing this unusable line of code.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L39
+
+```
+    event ContractDeployed();
+```
+## Open TODOs
+Open TODOs can point to architecture or programming issues that still need to be resolved. Consider resolving them before deploying.
+
+Here is one instance entailed:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L195
+
+```
+            // todo - check else case for any ETH lost
 ```
