@@ -178,3 +178,75 @@ There are 23 instances of this issue:
                     totalFreeFloatingShares -= sETHTotalStakeForKnot[_blsPublicKey];
                     
     File contracts/syndicate/Syndicate.sol, line 658:     totalClaimed += unclaimedUserShare;
+
+# 4. [G-4] Avoid changing storage data.
+
+Changing storage data costs a lot more gas than changing memory or stack variables so you should update the storage variable after all the calculations rather than updating it on every calculation.
+
+Instances include:
+
+    File contracts/liquid-staking/GiantMevAndFeesPool.sol, line 38 - 40:
+                    for (uint256 i; i < numOfVaults; ++i) {
+                        // As ETH is being deployed to a staking funds vault, it is no longer idle
+                        idleETH -= _ETHTransactionAmounts[i];
+                        ...
+                    }
+    I suggest code replaced:
+                    uint256 memory _idleETH = idleETH;
+                    for (uint256 i; i < numOfVaults; ++i) {
+                        // As ETH is being deployed to a staking funds vault, it is no longer idle
+                        _idleETH -= _ETHTransactionAmounts[i];
+                        ...
+                    }
+                    idleETH = _idleETH;
+
+    File contracts/liquid-staking/GiantSavETHVaultPool.sol, line 42- 46:
+                    for (uint256 i; i < numOfSavETHVaults; ++i) {
+                        uint256 transactionAmount = _ETHTransactionAmounts[i];
+
+                        // As ETH is being deployed to a savETH pool vault, it is no longer idle
+                        idleETH -= transactionAmount[i];
+                        ...
+                    }
+    I suggest code replaced:
+                    uint256 memory _idleETH = idleETH;
+                    for (uint256 i; i < numOfVaults; ++i) {
+                        uint256 transactionAmount = _ETHTransactionAmounts[i];
+
+                        // As ETH is being deployed to a savETH pool vault, it is no longer idle
+                        _idleETH -= transactionAmount[i];
+                        ...
+                    }
+                    idleETH = _idleETH;
+
+    File contracts/syndicate/Syndicate.sol, line 211 - 225:
+                    for (uint256 i; i < _blsPubKeys.length; ++i) {
+                        ...
+                        totalFreeFloatingShares += _sETHAmount;
+                        ...
+                    }
+    I suggest code replaced:
+                    uint256 memory _totalFreeFloatingShares = totalFreeFloatingShares ;
+                    for (uint256 i; i < numOfVaults; ++i) {
+                        ...
+                        _totalFreeFloatingShares += _sETHAmount;
+                        ...
+                    }
+                    totalFreeFloatingShares = _totalFreeFloatingShares ;
+
+    File contracts/syndicate/Syndicate.sol, line 648 - 658:
+                    for (uint256 i; i < _blsPubKeys.length; ++i) {
+                        ...
+                           totalClaimed += unclaimedUserShare;
+                        ...
+                    }
+    I suggest code replaced:
+                    uint256 memory _totalClaimed = totalClaimed ;
+                    for (uint256 i; i < numOfVaults; ++i) {
+                        ...
+                           _totalClaimed += unclaimedUserShare;
+                        ...
+                    }
+                    totalClaimed  = _totalClaimed ;
+
+
