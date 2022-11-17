@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "koxuan",
+  "risk": "3",
+  "title": "User from StakingFundsVault can claimRewards multiple times with their full lp balance",
+  "issueId": 131,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/131"
+}
