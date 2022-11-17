@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Sathish9098",
+  "risk": "2",
+  "title": "In GiantLP contract  giant pool address is assigned without zero address check ",
+  "issueId": 135,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/135"
+}
