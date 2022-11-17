@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "ladboy233",
+  "risk": "3",
+  "title": " Incorrect implementation of the ETHPoolLPFactory.sol#rotateLPTokens let user stakes ETH more than maxStakingAmountPerValidator in StakingFundsVault, and DOS the stake function in LiquidStakingManagerhttps://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L940",
+  "issueId": 132,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/132"
+}
