@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Lambda",
+  "risk": "2",
+  "title": "Underflow in SyndicateRewardsProcessor._updateAccumulatedETHPerLP after ETH withdrawal",
+  "issueId": 141,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/141"
+}
