@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "c7e7eff",
+  "risk": "3",
+  "title": "Incorrect accounting in SyndicateRewardsProcessor results in any LP token holder being able to steal other LP tokens holder's ETH from the fees and MEV vault.",
+  "issueId": 147,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/147"
+}
