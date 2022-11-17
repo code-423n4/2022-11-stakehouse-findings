@@ -104,6 +104,16 @@
 
         614:     stakedKnotsOfSmartWallet[smartWallet] -= 1; 
 
+       2022-11-stakehouse/contracts/liquid-staking/SyndicateRewardsProcessor.sol
+
+       65:      totalClaimed += due;
+
+       85:     accumulatedETHPerLPShare += (unprocessed * PRECISION) / _numOfShares;
+
+      
+
+      
+
  ##      
 
 ##  [G4]   lpTokenETH   State variable can be cached with local stack variables. It will save the gas fee
@@ -124,7 +134,7 @@
 
 > There are 3 instances of this issue:    
 
-              2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
+> 2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
               177:  return address(this).balance + totalClaimed - idleETH;
 
@@ -133,6 +143,18 @@
                2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
               409:   (uint256 nodeRunnerAmount, uint256 daoAmount) = _calculateCommission(address(this).balance - balBefore);
+
+               2022-11-stakehouse/contracts/liquid-staking/SyndicateRewardsProcessor.sol
+
+               43:   uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);
+
+              45:    return ((newAccumulatedETH * _balanceOfSender) / PRECISION) - claim;
+
+              61: uint256 due = ((accumulatedETHPerLPShare * balance) / PRECISION) - claimed[_user][_token];
+
+             85:   accumulatedETHPerLPShare += (unprocessed * PRECISION) / _numOfShares;
+               
+              
 
 ##
 
@@ -227,6 +249,18 @@ Recommended Migration Step :
          _burn(_recipient, _amount);
         }
 
+##
 
+## [G10]  State variable PRECISION can be catched with stack variable 
+
+> 2022-11-stakehouse/contracts/liquid-staking/SyndicateRewardsProcessor.sol
+
+        45:    return ((newAccumulatedETH * _balanceOfSender) / PRECISION) - claim;
+   
+        43:   uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);
+
+
+
+   
 
 
