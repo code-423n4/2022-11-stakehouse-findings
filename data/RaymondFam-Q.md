@@ -161,6 +161,45 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 640:    function _claimAsStaker(address _recipient, bytes[] calldata _blsPubKeys) internal {
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+218:    function deRegisterKnotFromSyndicate(bytes[] calldata _blsPublicKeys) external onlyDAO {
+
+239:    function updateDAOAddress(address _newAddress) external onlyDAO {
+
+249:    function updateDAORevenueCommission(uint256 _commissionPercentage) external onlyDAO {
+
+255:    function updateTicker(string calldata _newTicker) external onlyDAO {
+
+326:    function withdrawETHForKnot(address _recipient, bytes calldata _blsPublicKeyOfKnot) external {
+
+495:    function isBLSPublicKeyPartOfLSDNetwork(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+500:    function isBLSPublicKeyBanned(bytes calldata _blsPublicKeyOfKnot) public virtual view returns (bool) {
+
+645:    function _init(
+
+695:    function _authorizeRepresentative(
+
+739:    function _stake(
+
+776:    function _joinLSDNStakehouse(
+
+816:    function _createLSDNStakehouse(
+
+879:    function _autoStakeWithSyndicate(address _associatedSmartWallet, bytes memory _blsPubKey) internal {
+
+904:    function _initSavETHVault(address _savETHVaultDeployer, address _lpTokenFactory) internal virtual {
+
+911:    function _initStakingFundsVault(address _stakingFundsVaultDeployer, address _tokenFactory) internal virtual {
+
+921:    function _calculateCommission(uint256 _received) internal virtual view returns (uint256 _nodeRunner, uint256 _dao) {
+
+934:    function _assertEtherIsReadyForValidatorStaking(bytes calldata blsPubKey) internal view {
+
+948:    function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
+```
 ## Unspecific Compiler Version Pragma
 For most source-units the compiler version pragma is very unspecific ^0.8.13. While this often makes sense for libraries to allow them to be included with multiple different versions of an application, it may be a security risk for the actual application implementation itself. A known vulnerable compiler version may accidentally be selected or security tools might fall-back to an older compiler version ending up actually checking a different EVM compilation that is ultimately deployed on the blockchain.
 
@@ -267,6 +306,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L114
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L35
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L381
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L222
 
 ## Modifier for Identical Checks
 Similar/identical require statement used in different functions of the same contract should be grouped into a modifier.
@@ -324,6 +364,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol
 
 ## Add a Constructor Initializer
 As per Openzeppelin's recommendation:
@@ -346,6 +387,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L24-L25
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol#L42-L43
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L122-L123
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L165-L166
 
 ```
     /// @custom:oz-upgrades-unsafe-allow constructor
@@ -445,6 +487,17 @@ Here are the instances entailed:
 
 648:        for (uint256 i; i < _blsPubKeys.length; ++i) {
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+392:        for(uint256 i; i < _blsPubKeys.length; ++i) {
+
+465:        for(uint256 i; i < len; ++i) {
+
+538:        for (uint256 i; i < numOfValidators; ++i) {
+
+587:        for (uint256 i; i < numOfKnotsToProcess; ++i) {
+```
 ## Un-indexed Parameters in Events
 Consider indexing parameters for events, serving as logs filter when looking for specifically wanted data. Up to three parameters in an event function can receive the attribute `indexed` which will cause the respective arguments to be treated as log topics instead of data.
 
@@ -504,4 +557,24 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 
 ```
             // todo - check else case for any ETH lost
+```
+## Add a Timelock to Critical Parameter Change
+It is a good practice to give time for users to react and adjust to critical changes with a mandatory time window between them. The first step merely broadcasts to users that a particular change is coming, and the second step commits that change after a suitable waiting period. This allows users that do not accept the change to withdraw within the grace period. A timelock provides more guarantees and reduces the level of trust required, thus decreasing risk for users. It also indicates that the project is legitimate (less risk of a malicious Owner making any malicious or ulterior intention). Specifically, privileged roles could use front running to make malicious changes just ahead of incoming transactions, or purely accidental negative effects could occur due to the unfortunate timing of changes.
+
+Consider extending the timelock feature beyond contract ownership management to business critical functions. Here are some of the instances entailed:
+
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+239:    function updateDAOAddress(address _newAddress) external onlyDAO {
+
+249:    function updateDAORevenueCommission(uint256 _commissionPercentage) external onlyDAO {
+
+255:    function updateTicker(string calldata _newTicker) external onlyDAO {
+
+267:    function updateWhitelisting(bool _changeWhitelist) external onlyDAO returns (bool) {
+
+278:    function updateNodeRunnerWhitelistStatus(address _nodeRunner, bool isWhitelisted) external onlyDAO {
+
+948:    function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 ```
