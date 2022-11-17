@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "banky",
+  "risk": "3",
+  "title": "Loss of user funds in GiantMevAndFeesPool by calling batchDepositETHForStaking with a malicious StakingFundsVault contract",
+  "issueId": 112,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/112"
+}
