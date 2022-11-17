@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "ronnyx2017",
+  "risk": "3",
+  "title": "function withdrawETH from GiantMevAndFeesPool can steal most of eth because of totalRewardsReceived and idleETH miscalculation",
+  "issueId": 129,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/129"
+}
