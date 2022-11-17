@@ -242,6 +242,17 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-walle
 
 259:    ) external onlyManager nonReentrant {
 ```
+[File: Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
+
+```
+147:    ) external onlyOwner {
+
+154:    function deRegisterKnots(bytes[] calldata _blsPublicKeys) external onlyOwner {
+
+161:    function addPriorityStakers(address[] calldata _priorityStakers) external onlyOwner {
+
+168:    function updatePriorityStakingBlock(uint256 _endBlock) external onlyOwner {
+```
 ## Non-strict inequalities are cheaper than strict ones
 In the EVM, there is no opcode for non-strict inequalities (>=, <=) and two operations are performed (> + = or < + =).
 
@@ -399,6 +410,16 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L266-L268
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L276-L279
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L286-L288
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L211-L237
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L259-L279
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L301-L332
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L346-L348
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L420-L435
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L513-L523
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L560-L579
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L585-L593
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L598-L606
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L648-L679
 
 ## calldata and memory
 When running a function we could pass the function parameters as calldata or memory for variables such as strings, bytes, structs, arrays etc. If we are not modifying the passed parameter, we should pass it as calldata because calldata is more gas efficient than memory.
@@ -423,18 +444,149 @@ Here are the instances entailed:
 
 360:    function _claimFundsFromSyndicateForDistribution(address _syndicate, bytes[] memory _blsPubKeys) internal {
 ```
+[File: Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
+
+```
+132:        address[] memory _priorityStakers,
+
+133:        bytes[] memory _blsPubKeysForSyndicateKnots
+
+337:    function updateCollateralizedSlotOwnersAccruedETH(bytes memory _blsPubKey) external {
+
+343:    function batchUpdateCollateralizedSlotOwnersAccruedETH(bytes[] memory _blsPubKeys) external {
+
+359:    function calculateUnclaimedFreeFloatingETHShare(bytes memory _blsPubKey, address _user) public view returns (uint256) {
+
+472:        address[] memory _priorityStakers,
+
+491:    function _updateCollateralizedSlotOwnersLiabilitySnapshot(bytes memory _blsPubKey) internal {
+
+555:    function _registerKnotsToSyndicate(bytes[] memory _blsPubKeysForSyndicateKnots) internal {
+
+583:    function _addPriorityStakers(address[] memory _priorityStakers) internal {
+
+610:    function _deRegisterKnot(bytes memory _blsPublicKey) internal {
+
+631:        bytes memory _blsPublicKey
+```
 ## State Variables Repeatedly Read Should be Cached
 SLOADs cost 100 gas each after the 1st one whereas MLOADs/MSTOREs only incur 3 gas each. As such, storage values read multiple times should be cached in the stack memory the first time (costing only 1 SLOAD) and then re-read from this cache to avoid multiple SLOADs.
 
-`_isTransferApproved` could be cached and have the code block instance below refactored:
+`accumulatedETHPerFreeFloatingShare` could be cached  before the for loop and have the code block instance refactored as follows:
 
-https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L131-L132
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L211-L237
 
 ```
-            bool isTransferApproved[from][to] =_isTransferApproved[from][to]; // SLOAD 1
+    uint256 _accumulatedETHPerFreeFloatingShare = accumulatedETHPerFreeFloatingShare; // SLOAD 1
 
-131:        bool statusChanged = isTransferApproved[from][to] != status; // MLOAD 1
-132:        isTransferApproved[from][to] = status; // F: [OSW-2], MLOAD 2
+                    // A whole loop of MLOADs
+228:            sETHUserClaimForKnot[_blsPubKey][_onBehalfOf] = (_sETHAmount * _accumulatedETHPerFreeFloatingShare) / PRECISION; 
+```
+`accumulatedETHPerCollateralizedSlotPerKnot` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L493-L527
+
+```
+    uint256 _accumulatedETHPerCollateralizedSlotPerKnot = accumulatedETHPerCollateralizedSlotPerKnot; // SLOAD 1
+
+494:                    _accumulatedETHPerCollateralizedSlotPerKnot - totalETHProcessedPerCollateralizedKnot[_blsPubKey]; // MLOAD 1
+
+527:                totalETHProcessedPerCollateralizedKnot[_blsPubKey] = _accumulatedETHPerCollateralizedSlotPerKnot; // MLOAD 2
+```
+`totalFreeFloatingShares` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L551
+
+```
+    uint256 _totalFreeFloatingShares = totalFreeFloatingShares; // SLOAD 1
+
+551:        return _totalFreeFloatingShares > 0 ? (_ethSinceLastUpdate * PRECISION) / _totalFreeFloatingShares : 0; // MLOAD 1 and MLOAD 2
+```
+`numberOfRegisteredKnots` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L177-L189
+
+```
+    uint256 _numberOfRegisteredKnots = numberOfRegisteredKnots; // SLOAD 1
+
+177:        if (_numberOfRegisteredKnots > 0) { // MLOAD 1
+
+189:            uint256 collateralizedUnprocessed = ((totalEthPerSlotType - lastSeenETHPerCollateralizedSlotPerKnot) / _numberOfRegisteredKnots); // MLOAD 2
+```
+`priorityStakingEndBlock` could be cached  before the for loop and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L211-L238
+
+```
+    uint256 _priorityStakingEndBlock = priorityStakingEndBlock; // SLOAD 1
+ 
+248:            if (block.number < _priorityStakingEndBlock && !isPriorityStaker[_onBehalfOf]) revert NotPriorityStaker(); // A whole loop of MLOADs
+```
+`isNoLongerPartOfSyndicate` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L500-L533
+
+```
+    bool _isNoLongerPartOfSyndicate[_blsPubKey] = isNoLongerPartOfSyndicate[_blsPubKey]; // SLOAD 1
+
+500:        if (unprocessedETHForCurrentKnot > 0 && !_isNoLongerPartOfSyndicate[_blsPubKey]) { // MLOAD 1
+
+533:        if (!isActive && !_isNoLongerPartOfSyndicate[_blsPubKey]) { // MLOAD 2
+```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L612-L615
+
+```
+    bool _isNoLongerPartOfSyndicate[_blsPubKey] = isNoLongerPartOfSyndicate[_blsPubKey]; // SLOAD 1
+
+612:        if (_isNoLongerPartOfSyndicate[_blsPublicKey] == true) revert KnotHasAlreadyBeenDeRegistered(); { // MLOAD 1
+
+615:        _isNoLongerPartOfSyndicate[_blsPublicKey] = true; { // MLOAD 2
+```
+`lastAccumulatedETHPerFreeFloatingShare` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L634-L635
+
+```
+   uint256 _lastAccumulatedETHPerFreeFloatingShare = lastAccumulatedETHPerFreeFloatingShare; // SLOAD 1
+
+634:        _lastAccumulatedETHPerFreeFloatingShare[_blsPublicKey] > 0 ? // MLOAD 1
+ 
+635:       _lastAccumulatedETHPerFreeFloatingShare[_blsPublicKey] : MLOAD 2
+```
+## Unneeded State Variable Cache
+The following instances of state variable caches is unnecessary since `currentAccumulatedETHPerFreeFloatingShare`, `updatedAccumulatedETHPerFreeFloatingShare`, and `stakedBal` are only referenced once in the function call.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L384-L396
+
+```
+    function previewUnclaimedETHAsFreeFloatingStaker(
+        address _staker,
+        bytes calldata _blsPubKey
+    ) external view returns (uint256) {
+        uint256 currentAccumulatedETHPerFreeFloatingShare = accumulatedETHPerFreeFloatingShare;
+        uint256 updatedAccumulatedETHPerFreeFloatingShare =
+                            currentAccumulatedETHPerFreeFloatingShare + calculateNewAccumulatedETHPerFreeFloatingShare();
+
+        uint256 stakedBal = sETHStakedBalanceForKnot[_blsPubKey][_staker];
+        uint256 userShare = (updatedAccumulatedETHPerFreeFloatingShare * stakedBal) / PRECISION;
+
+        return userShare - sETHUserClaimForKnot[_blsPubKey][_staker];
+    }
+```
+Similarly, the following instances of state variable caches is unnecessary since `staker` is dynamically different and referenced once on each iteration.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L585-L593
+
+```
+        for (uint256 i; i < _priorityStakers.length; ++i) {
+            address staker = _priorityStakers[i];
+
+            if (i > 0 && staker < _priorityStakers[i-1]) revert DuplicateArrayElements();
+
+            isPriorityStaker[staker] = true;
+
+            emit PriorityStakerRegistered(staker);
+        }
 ```
 ## Avoid Boolean Expressions Comparison to Boolean Literals in Conditional Checks
 You will save deployment gas by not comparing boolean expressions to boolean literals in the `if` or `require` statements.
