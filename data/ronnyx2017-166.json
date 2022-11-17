@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "ronnyx2017",
+  "risk": "3",
+  "title": "GiantMevAndFeesPool.batchDepositETHForStaking does not check if the stakingFundsVault is valide, attackers can take away all the idleETH from the pool",
+  "issueId": 166,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/166"
+}
