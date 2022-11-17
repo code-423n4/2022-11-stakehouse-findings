@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Lambda",
+  "risk": "3",
+  "title": "ETH can be stolen from GiantMevAndFeesPool & GiantSavETHVaultPool with malicious vault address",
+  "issueId": 139,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/139"
+}
