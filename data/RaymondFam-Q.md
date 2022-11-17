@@ -134,6 +134,33 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 371:    function _init(LiquidStakingManager _liquidStakingNetworkManager, LPTokenFactory _lpTokenFactory) internal virtual {
 ```
+[File: Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
+
+```
+154:    function deRegisterKnots(bytes[] calldata _blsPublicKeys) external onlyOwner {
+
+290:     function claimAsCollateralizedSLOTOwner(
+
+469:    function _initialize(
+
+491:    function _updateCollateralizedSlotOwnersLiabilitySnapshot(bytes memory _blsPubKey) internal {
+
+545:    function _calculateNewAccumulatedETHPerCollateralizedShare(uint256 _ethSinceLastUpdate) internal view returns (uint256) {
+
+550:    function _calculateNewAccumulatedETHPerFreeFloatingShare(uint256 _ethSinceLastUpdate) internal view returns (uint256) {
+
+555:    function _registerKnotsToSyndicate(bytes[] memory _blsPubKeysForSyndicateKnots) internal {
+
+583:    function _addPriorityStakers(address[] memory _priorityStakers) internal {
+
+597:    function _deRegisterKnots(bytes[] calldata _blsPublicKeys) internal {
+
+610:    function _deRegisterKnot(bytes memory _blsPublicKey) internal {
+
+630:    function _getCorrectAccumulatedETHPerFreeFloatingShareForBLSPublicKey(
+
+640:    function _claimAsStaker(address _recipient, bytes[] calldata _blsPubKeys) internal {
+```
 ## Unspecific Compiler Version Pragma
 For most source-units the compiler version pragma is very unspecific ^0.8.13. While this often makes sense for libraries to allow them to be included with multiple different versions of an application, it may be a security risk for the actual application implementation itself. A known vulnerable compiler version may accidentally be selected or security tools might fall-back to an older compiler version ending up actually checking a different EVM compilation that is ultimately deployed on the blockchain.
 
@@ -394,6 +421,29 @@ Here are the instances entailed:
 276:        for (uint256 i; i < _blsPubKeys.length; ++i) {
 
 286:        for (uint256 i; i < _token.length; ++i) {
+```
+[File: Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
+
+```
+211:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+259:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+301:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+346:        for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+420:        for (uint256 i; i < numberOfCollateralisedSlotOwnersForKnot; ++i) {
+
+513:                    for (uint256 i; i < numberOfCollateralisedSlotOwnersForKnot; ++i) {
+
+560:        for (uint256 i; i < knotsToRegister; ++i) {
+
+585:        for (uint256 i; i < _priorityStakers.length; ++i) {
+
+598:        for (uint256 i; i < _blsPublicKeys.length; ++i) {
+
+648:        for (uint256 i; i < _blsPubKeys.length; ++i) {
 ```
 ## Un-indexed Parameters in Events
 Consider indexing parameters for events, serving as logs filter when looking for specifically wanted data. Up to three parameters in an event function can receive the attribute `indexed` which will cause the respective arguments to be treated as log topics instead of data.
