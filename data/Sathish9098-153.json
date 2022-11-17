@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Sathish9098",
+  "risk": "2",
+  "title": "The due amount  is assigned to totalClaimed without checking the call operation is success or not . Unable to revert back the due amount even if  _recipient.call{value: due}(\"\") failed",
+  "issueId": 153,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/153"
+}
