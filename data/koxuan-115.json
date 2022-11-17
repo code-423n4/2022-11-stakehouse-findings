@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "koxuan",
+  "risk": "3",
+  "title": "BringUnusedETHBackIntoGiantPool can cause stuck ether funds in Giant Pool",
+  "issueId": 115,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/115"
+}
