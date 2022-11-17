@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "CloudX",
+  "risk": "2",
+  "title": "`LiquidStakingManagel.registerBLSPublicKeys` method wrongly checks if eoaRepsentative is a contract",
+  "issueId": 137,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/137"
+}
