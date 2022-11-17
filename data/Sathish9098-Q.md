@@ -3,10 +3,9 @@
 
 ### Index event fields make the field more quickly accessible to off-chain tools that parse events. However, note that each index field costs extra gas during emission, so it’s not necessarily best to index the maximum allowed per event (three fields). Each event should use three indexed fields if there are three or more fields, and gas usage is not particularly of concern for the events in question. If there are fewer than three fields, all of the fields should be indexed.
 
-> There are 6   instances of this issue:
+> There are 10 instances of this issue:
 
-
-         FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
 
          16:   event ETHWithdrawnByDepositor(address depositor, uint256 amount);
         
@@ -16,18 +15,30 @@
 
          25:   event LPTokenMinted(bytes blsPublicKeyOfKnot, address token, address depositor, uint256 amount);
 
-         2022-11-stakehouse/contracts/liquid-staking/SavETHVault.sol 
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/SavETHVault.sol 
 
          22:     event ETHWithdrawnForStaking(address withdrawalAddress, address liquidStakingManager, uint256 amount);
 
          19:      event DETHRedeemed(address depositor, uint256 amount);
 
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/StakingFundsVault.sol
+
+        25:     event ETHDeposited(address sender, uint256 amount);
+
+       28:      event ETHWithdrawn(address receiver, address admin, uint256 amount);
+
+      31:       event ERC20Recovered(address admin, address recipient, uint256 amount);
+
+      34:       event WETHUnwrapped(address admin, uint256 amount);
+
+      
+
 
 ###
 
-##  [2] public MODIFIER CAN BE CHANGED TO internal in **rotateLPTokens()** .  rotateLPTokens() IS USED WITHIN THE FUNCTIONS. IF WE DECLARE  rotateLPTokens() AS A public  CAN BE ACCESSIBLE FROM OUTSIDE OF THE SMART CONTRACTS.
+##  [2]  public MODIFIER CAN BE CHANGED TO internal in **rotateLPTokens()** .  rotateLPTokens() IS USED WITHIN THE FUNCTIONS. IF WE DECLARE  rotateLPTokens() AS A public  CAN BE ACCESSIBLE FROM OUTSIDE OF THE SMART CONTRACTS.
 
-              FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
+>FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
  
               76:  function rotateLPTokens(LPToken _oldLPToken, LPToken _newLPToken, uint256 _amount) public {
 
@@ -37,8 +48,7 @@
 
 ###  Constructors don’t have zero-checks, which could force a re-deployment, funds are not at risk in those cases.
 
-
-        FILE: 2022-11-stakehouse/contracts/liquid-staking/GiantLP.sol 
+> FILE: 2022-11-stakehouse/contracts/liquid-staking/GiantLP.sol 
 
        constructor(
         address _pool,
@@ -52,11 +62,11 @@
 
 ##
 
-## [4] REQUIRE STATEMENTS RETURNS WRONG OR MEANING LESS  ERROR COMMANDS 
+## [4]  REQUIRE STATEMENTS RETURNS WRONG OR MEANING LESS  ERROR COMMANDS 
 
 > There are   instances of this issue:
 
-      2022-11-stakehouse/contracts/liquid-staking/GiantLP.sol
+> FILE: 2022-11-stakehouse/contracts/liquid-staking/GiantLP.sol
 
       30:    require(msg.sender == pool, "Only pool");
 
@@ -74,7 +84,7 @@
 
 ###   In batchDepositETHForStaking() the value of the numOfVaults is assigned before checking the conditions. This not a best code practice. If the first require statement failed then no use for numOfVaults  assignment. 
 
-> There are   instances of this issue:
+> There are 3  instances of this issue:
 
         2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
@@ -130,29 +140,29 @@ Proof Of Concept :
 
 > There are 9  instances of this issue:
 
-          2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
           116:    require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
 
-          2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol
 
          127:   require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
 
-        2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+> FILE:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
         256:    require(bytes(_newTicker).length >= 3, "String must be 3-5 characters long");
 
         257:    require(bytes(_newTicker).length <= 5, "String must be 3-5 characters long");
 
-      333:   require(associatedSmartWallet.balance >= 4 ether, "Insufficient balance");
+        333:   require(associatedSmartWallet.balance >= 4 ether, "Insufficient balance");
 
-      433:   require(msg.value == len * 4 ether, "Insufficient ether provided");
+        433:   require(msg.value == len * 4 ether, "Insufficient ether provided");
 
-      431:   require(len >= 1, "No value provided");'
+        431:   require(len >= 1, "No value provided");'
 
-      661:   require(bytes(_stakehouseTicker).length >= 3, "String must be 3-5 characters long");
+        661:   require(bytes(_stakehouseTicker).length >= 3, "String must be 3-5 characters long");
       
-      662: require(bytes(_stakehouseTicker).length <= 5, "String must be 3-5 characters long");
+        662: require(bytes(_stakehouseTicker).length <= 5, "String must be 3-5 characters long");
 
 
 ## 
@@ -189,7 +199,7 @@ Proof Of Concept :
 
 ## [10]  SPDX-License-Identifier: STATEMENT SHOULD BE DECLARED BEFORE pragma solidity ^0.8.13; DECLARATIONS . IN MANY INTERFACES LICENSE STATEMENT DECLARED BEFORE PRAGMA STATEMENT . THE BEST CODE PRACTICE IS license DECLARATIONS BEFORE pragma STATEMENT
 
-> There are   instances of this issue:
+> There are 9  instances of this issue:
 
           2022-11-stakehouse/contracts/interfaces/IGateKeeper.sol
 
@@ -237,5 +247,5 @@ Proof Of Concept :
 
 ##  [11]  LACK OF ZERO CHECKS FOR NEW ADDRESSES IN FUNCTIONS. THERE ARE MANY FUNCTIONS NOT CHECKING ZERO ADDRESS BEFORE ASSIGNING THE VALUES TO VARIABLES. 
 
-##
+##  
 
