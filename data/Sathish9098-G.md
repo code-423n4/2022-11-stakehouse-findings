@@ -170,7 +170,9 @@
          
    ## 
 
-##   [G5]  ADD UNCHECKED {} FOR ARITHMATIC OPERATIONS WHERE THE OPERANDS CANNOT UNDERFLOW        
+##   [G5]  ADD UNCHECKED {} FOR ARITHMATIC OPERATIONS WHERE THE OPERANDS CANNOT UNDERFLOW    
+
+<https://docs.soliditylang.org/en/v0.8.7/control-structures.html#checked-or-unchecked-arithmetic>    
 
 > There are 12 instances of this issue:    
 
@@ -393,6 +395,146 @@ Recommended Migration Step :
 
 ##  
 
-   
+## G[14]    In _joinLSDNStakehouse() function **brand** should be cached with stack variable 
 
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> See @audit
+
+<https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L789-L797>
+
+       function _joinLSDNStakehouse(
+        bytes calldata _blsPubKey,
+        IDataStructures.ETH2DataReport calldata _beaconChainBalanceReport,
+        IDataStructures.EIP712Signature calldata _reportSignature
+        ) internal {
+        // total number of knots created with the syndicate increases
+        numberOfKnots += 1;
+
+        // The savETH will go to the savETH vault, the collateralized SLOT for syndication owned by the smart wallet
+        // sETH will also be minted in the smart wallet but will be moved out and distributed to the syndicate for claiming by the DAO
+        address associatedSmartWallet = smartWalletOfKnot[_blsPubKey];
+
+        // Join the LSDN stakehouse
+        string memory lowerTicker = IBrandNFT(brand).toLowerCase(stakehouseTicker);        ///@audit brand 
+        IOwnableSmartWallet(associatedSmartWallet).execute(
+            address(getTransactionRouter()),
+            abi.encodeWithSelector(
+                ITransactionRouter.joinStakehouse.selector,
+                associatedSmartWallet,
+                _blsPubKey,
+                stakehouse,
+                IBrandNFT(brand).lowercaseBrandTickerToTokenId(lowerTicker),      ///@audit brand 
+                savETHVault.indexOwnedByTheVault(),
+                _beaconChainBalanceReport,
+                _reportSignature
+            )
+        );
+
+        // Register the knot to the syndicate
+        bytes[] memory _blsPublicKeyOfKnots = new bytes[](1);
+        _blsPublicKeyOfKnots[0] = _blsPubKey;
+        Syndicate(payable(syndicate)).registerKnotsToSyndicate(_blsPublicKeyOfKnots);
+
+        // Autostake DAO sETH with the syndicate
+        _autoStakeWithSyndicate(associatedSmartWallet, _blsPubKey);
+
+        emit StakehouseJoined(_blsPubKey);
+      }
+
+##
+
+## G[15]   In _createLSDNStakehouse() function **stakehouse** state variable should be cached with local variable . stakehouse state variable used 5 times in this function instead stack variables.
+
+<https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L816-L876 >
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> See @audit 
+
+       function _createLSDNStakehouse(
+        bytes calldata _blsPublicKeyOfKnot,
+        IDataStructures.ETH2DataReport calldata _beaconChainBalanceReport,
+        IDataStructures.EIP712Signature calldata _reportSignature
+       ) internal {
+        // create stakehouse and mint derivative for first bls key - the others are just used to create the syndicate
+        // The savETH will go to the savETH vault, the collateralized SLOT for syndication owned by the smart wallet
+        // sETH will also be minted in the smart wallet but will be moved out and distributed to the syndicate for claiming by the DAO
+        address associatedSmartWallet = smartWalletOfKnot[_blsPublicKeyOfKnot];
+        IOwnableSmartWallet(associatedSmartWallet).execute(
+            address(getTransactionRouter()),
+            abi.encodeWithSelector(
+                ITransactionRouter.createStakehouse.selector,
+                associatedSmartWallet,
+                _blsPublicKeyOfKnot,
+                stakehouseTicker,
+                savETHVault.indexOwnedByTheVault(),
+                _beaconChainBalanceReport,
+                _reportSignature
+            )
+        );
+
+        // Number of knots has increased
+        numberOfKnots += 1;
+
+        // Capture the address of the Stakehouse for future knots to join
+        stakehouse = getStakeHouseUniverse().memberKnotToStakeHouse(_blsPublicKeyOfKnot);                        //@Audit  stakehouse
+        IERC20 sETH = IERC20(getSlotRegistry().stakeHouseShareTokens(stakehouse));                                     //@Audit  stakehouse
+
+        // Give liquid staking manager ability to manage keepers and set a house keeper if decided by the network
+        IOwnableSmartWallet(associatedSmartWallet).execute(
+            stakehouse,                                                                        //@Audit  stakehouse
+            abi.encodeWithSelector(
+                Ownable.transferOwnership.selector,
+                address(this)
+            )
+        );
+
+        if (address(gatekeeper) != address(0)) {
+            IStakeHouseRegistry(stakehouse).setGateKeeper(address(gatekeeper));                            //@Audit  stakehouse
+        }
+
+        // Deploy the EIP1559 transaction reward sharing contract but no priority required because sETH will be auto staked
+        address[] memory priorityStakers = new address[](0);
+        bytes[] memory initialKnots = new bytes[](1);
+        initialKnots[0] = _blsPublicKeyOfKnot;
+        syndicate = syndicateFactory.deploySyndicate(
+            address(this),
+            0,
+            priorityStakers,
+            initialKnots
+        );
+
+        // Contract approves syndicate to take sETH on behalf of the DAO
+        sETH.approve(syndicate, (2 ** 256) - 1);
+
+        // Auto-stake sETH by pulling sETH out the smart wallet and staking in the syndicate
+        _autoStakeWithSyndicate(associatedSmartWallet, _blsPublicKeyOfKnot);
+
+        emit StakehouseCreated(stakehouseTicker, stakehouse);                                     //@Audit  stakehouse
+    }
+
+
+##   _createLSDNStakehouse()  **syndicate** state variable should be cached . state syndicate used two times 
+
+<https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L816-L876 >
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> See @audit 
+
+## [G16]  address[] memory priorityStakers = new address[](0);
+        bytes[] memory initialKnots = new bytes[](1);
+        initialKnots[0] = _blsPublicKeyOfKnot;
+        syndicate = syndicateFactory.deploySyndicate(             /// @Audit  syndicate 
+            address(this),
+            0,
+            priorityStakers,
+            initialKnots
+        );
+
+        // Contract approves syndicate to take sETH on behalf of the DAO
+        sETH.approve(syndicate, (2 ** 256) - 1);                /// @Audit  syndicate 
+            address(this),
+ 
 
