@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Lambda",
+  "risk": "2",
+  "title": "Attacker can grift syndicate staking by staking a small amount",
+  "issueId": 146,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/146"
+}
