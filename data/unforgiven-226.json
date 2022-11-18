@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "3",
+  "title": "possible reentrancy and fund theft in withdrawDETH() of GiantSavETHVaultPool because there is no whitelist check for user provided Vaults and there is no reentrancy defnece",
+  "issueId": 226,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/226"
+}
