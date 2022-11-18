@@ -13,10 +13,10 @@
 [`require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network"); `](https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/SavETHVault.sol#L64)
 [`require(liquidStakingNetworkManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network");`](https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/StakingFundsVault.sol#L79)
 
-## G4. state variable can be load into stack to save sload, if used multiple times
+## G4. state variable can be loaded into local variable to save sload, if used multiple times
 [`numberOfRegisteredKnots`](https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L189) 
 
-
+## G5. reuse local variables if state variable used multiple times
 change `sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;` to `sETHTotalStakeForKnot[_blsPubKey] = totalStaked + _sETHAmount;`
 in https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L226
 
