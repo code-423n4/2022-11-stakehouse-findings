@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Sathish9098",
+  "risk": "2",
+  "title": "_blsPubKeysForSyndicateKnots parameter array accept different hexa-decimal lengths . The hexadecimal value should be equal.  So we need to check the hexa-decimal length before adding knots to syndicate",
+  "issueId": 335,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/335"
+}
