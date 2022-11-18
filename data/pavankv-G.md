@@ -308,6 +308,15 @@ Deployment Gas Saved: 1 607
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L611
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L612
 
+10 .Use assembly to check for address(0).
+Use assembly to check for address(0) Saves 6 gas per instance if using assembly to check for address(0) e.g.
 
+assembly {
+ if iszero(_addr) {
+  mstore(0x00, "zero address")
+  revert(0x00, 0x20)
+ }
+}
 
-
+code snippet:-
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L441
