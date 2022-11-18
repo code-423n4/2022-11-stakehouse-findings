@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "gz627",
+  "risk": "2",
+  "title": "smartWallet address is not guaranteed correct. ETH may be lost",
+  "issueId": 317,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/317"
+}
