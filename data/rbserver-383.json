@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "rbserver",
+  "risk": "2",
+  "title": "Compromised or malicious DAO can restrict actions of node runners who are not malicious",
+  "issueId": 383,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/383"
+}
