@@ -6,7 +6,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721
 which will attempt to send eth back to GiantSavETHVaultPool at
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/SavETHVault.sol#L189
 
-It's not clear that GiantSavETHVaultPool has a function to receive this ETH. In addition, upon receiving the ETH it should update idleETH with this amount.
+If GiantSavETHVaultPool receives this ETH, it should update idleETH with this amount.
 
 
 
@@ -18,7 +18,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721
 which will attempt to send eth back to GiantMevAndFeesPool at
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/StakingFundsVault.sol#L190
 
-It's not clear that GiantMevAndFeesPool has a function to receive this ETH. In addition, upon receiving the ETH it should update idleETH with this amount.
+If GiantMevAndFeesPool receives this ETH, it should update idleETH with this amount and ensure the eth is treated as idleETH availabe for further investment rather than as rewards.
 
 
 ## 3 Consider calling updateAccumulatedETHPerLP() in GiantMevAndFeesPool _onWithdraw()
@@ -27,6 +27,16 @@ In GiantMevAndFeesPool _onWithdraw(), consider calling updateAccumulatedETHPerLP
 
 The updateAccumulatedETHPerLP() would go here:
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/GiantMevAndFeesPool.sol#L186
+
+It's possible that the caller of _onWithdraw(), withdrawLPTokens(), will later trigger updateAccumulatedETHPerLP() and another _distributeETHRewardsToUserForToken() when the giant tokens are burned:
+https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/GiantPoolBase.sol#L83
+
+And then beforeTokenTransfer() is called:
+https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/GiantMevAndFeesPool.sol#L146
+
+However I have not tested this out (in fact, there is a separate and more serious issue causing withdrawLPTokens() which I have documented in a separate issue).
+
+In any case, since _onWitdraw() collects rewards from the lpTokens and then immediately attempts to distribute them using _distributeETHRewardsToUserForToken, it would seem to make sense to updateAccumulatedETHPerLP() first.
 
 
 
