@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "3",
+  "title": "afterTokenTransfer() should set _from address claimed[][] too, because balance of _from changes too",
+  "issueId": 269,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/269"
+}
