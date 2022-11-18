@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "yixxas",
+  "risk": "2",
+  "title": "Lack of input verification in `rotateEOARepresentative()` can allow node runner to set `_newRepresentative` to a smart contract address",
+  "issueId": 187,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/187"
+}
