@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "JC",
+  "risk": "2",
+  "title": "ERC20 return values not checked",
+  "issueId": 432,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/432"
+}
