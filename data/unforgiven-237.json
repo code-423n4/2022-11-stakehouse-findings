@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "3",
+  "title": "wrong reward calculations because function _distributeETHRewardsToUserForToken() in SyndicateRewardsProcessor set the wrong value for claimed[_user][_token] ",
+  "issueId": 237,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/237"
+}
