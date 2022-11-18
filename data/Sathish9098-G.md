@@ -447,7 +447,7 @@ Recommended Migration Step :
         _deRegisterKnots(_blsPublicKeys);
     }
 
-   function updatePriorityStakingBlock(uint256 _endBlock) external onlyOwner {
+     function updatePriorityStakingBlock(uint256 _endBlock) external onlyOwner {
         updateAccruedETHPerShares();
         priorityStakingEndBlock = _endBlock;
     }
@@ -709,6 +709,8 @@ Recommended Migration Step :
 
 > File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
+> See @audit 
+
 <https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L854-L856>
 
 ##
@@ -747,7 +749,7 @@ Recommended Migration Step :
         return (_received, 0);
       }
 
-function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
+      function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
         require(_commissionPercentage <= MODULO, "Invalid commission");
 
         emit DAOCommissionUpdated(daoCommissionPercentage, _commissionPercentage);  // @Audit daoCommissionPercentage
@@ -757,7 +759,7 @@ function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 
 ##
 
-## G[21]   calldata can be used instead of memory. To save a gas cost .
+##   G[21]   calldata can be used instead of memory. To save a gas cost .
 
 
 > There are 6 instance for this problem:  
@@ -787,7 +789,7 @@ function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 
 ##
 
-## [G22]    DIVISION BY TWO SHOULD USE BIT SHIFTING
+##   [G22]    DIVISION BY TWO SHOULD USE BIT SHIFTING
 
 ###   <x> / 2 is the same as <x> >> 1. While the compiler uses the SHR opcode to accomplish both, the version that uses division incurs an overhead of 20 gas due to JUMPs to and from a compiler utility function that introduces checks which can be avoided by using unchecked {} around the division by two
 
@@ -795,5 +797,53 @@ function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 
        378:     return ethPerKnot / 2;
 
+##
+
+##  [G23] State variable totalFreeFloatingShares should be cached with stack variable
+
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+> See @audit 
+
+
+       function _calculateNewAccumulatedETHPerFreeFloatingShare(uint256 _ethSinceLastUpdate) internal view returns (uint256) {
+        return totalFreeFloatingShares > 0 ? (_ethSinceLastUpdate * PRECISION) / totalFreeFloatingShares : 0;  //@Audit  totalFreeFloatingShares 
+        }
+
+##
+
+##   [G24]   State variable numberOfRegisteredKnots should be cached with stack variable
+
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+> See @audit 
+
+         function updateAccruedETHPerShares() public {
+        // Ensure there are registered KNOTs. Syndicates are deployed with at least 1 registered but this can fall to zero.
+        // Fee recipient should be re-assigned in the event that happens as any further ETH can be collected by owner
+        if (numberOfRegisteredKnots > 0) {                                           //@Audit  numberOfRegisteredKnots 
+            // All time, total ETH that was earned per slot type (free floating or collateralized)
+            uint256 totalEthPerSlotType = calculateETHForFreeFloatingOrCollateralizedHolders();
+
+            // Process free floating if there are staked shares
+            uint256 freeFloatingUnprocessed;
+            if (totalFreeFloatingShares > 0) {
+                freeFloatingUnprocessed = getUnprocessedETHForAllFreeFloatingSlot();
+                accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed);
+                lastSeenETHPerFreeFloating = totalEthPerSlotType;
+            }
+
+            uint256 collateralizedUnprocessed = ((totalEthPerSlotType - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);  
+
+             //@Audit  numberOfRegisteredKnots 
+
+            accumulatedETHPerCollateralizedSlotPerKnot += collateralizedUnprocessed;
+            lastSeenETHPerCollateralizedSlotPerKnot = totalEthPerSlotType;
+
+            emit UpdateAccruedETH(freeFloatingUnprocessed + collateralizedUnprocessed);
+        } else {
+            // todo - check else case for any ETH lost
+        }
+    }
 
 
