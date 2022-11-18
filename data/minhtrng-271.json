@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "minhtrng",
+  "risk": "2",
+  "title": "DOS staking by increasing LP tokens totalSupply above the intended limit",
+  "issueId": 271,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/271"
+}
