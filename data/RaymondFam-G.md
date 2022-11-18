@@ -721,6 +721,57 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 272:        return _enableWhitelisting; // MLOAD 2
 ```
+`isNodeRunnerWhitelisted[_nodeRunner]` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L280-L282
+
+```
+    bool _isNodeRunnerWhitelisted = isNodeRunnerWhitelisted[_nodeRunner];
+
+                // MLOAD 1 and MLOAD 2
+                // There is code flaw here for which I have submitted the bug in a different report 
+280:        require(_isNodeRunnerWhitelisted != _isNodeRunnerWhitelisted, "Unnecessary update to same status");
+```
+`smartWalletRepresentative[smartWallet]` could be cached right after it is updated and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L296-L299
+
+```
+    address _smartWalletRepresentative = smartWalletRepresentative[smartWallet]; // SLOAD 1
+
+296:        require(_smartWalletRepresentative != _newRepresentative, "Invalid rotation to same EOA"); // MLOAD 1
+
+299:        _authorizeRepresentative(smartWallet, _smartWalletRepresentative, false); // MLOAD 2
+```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L314-L317
+
+```
+    address _smartWalletRepresentative = smartWalletRepresentative[smartWallet]; // SLOAD 1
+
+314:        require(_smartWalletRepresentative != _newRepresentative, "Invalid rotation to same EOA"); // MLOAD 1
+
+317:        _authorizeRepresentative(smartWallet, _smartWalletRepresentative, false); // MLOAD 2
+```
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L454-L455
+
+```
+    address _smartWalletRepresentative = smartWalletRepresentative[smartWallet]; // SLOAD 1
+
+454:        if(_smartWalletRepresentative != address(0)) { // MLOAD 1
+
+455:            require(smartWalletRepresentative[smartWallet] == _eoaRepresentative, "Different EOA specified - rotate outside"); // MLOAD 2
+```
+`daoCommissionPercentage` could be cached and have the code block instance refactored as follows:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L924-L925
+
+```
+    uint256 _daoCommissionPercentage = daoCommissionPercentage; // SLOAD 1
+
+924:        if (_daoCommissionPercentage > 0) { // MLOAD 1
+
+925:            uint256 daoAmount = (_received * _daoCommissionPercentage) / MODULO; // MLOAD 2
+```
 ## Unneeded State Variable Cache
 The following instances of state variable caches is unnecessary since `currentAccumulatedETHPerFreeFloatingShare`, `updatedAccumulatedETHPerFreeFloatingShare`, and `stakedBal` are only referenced once in the function call.
 
@@ -791,6 +842,29 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
         if (isKnotRegistered[_blsPublicKey] == false) revert KnotIsNotRegisteredWithSyndicate();
         if (isNoLongerPartOfSyndicate[_blsPublicKey] == true) revert KnotHasAlreadyBeenDeRegistered();
 ```
+[File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+```
+291:        require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network");
+
+328:        require(isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key has already withdrawn or not a part of LSD network");
+
+332:        require(isNodeRunnerBanned(nodeRunnerOfSmartWallet[associatedSmartWallet]) == false, "Node runner is banned from LSD network");
+
+393:            require(isBLSPublicKeyBanned(_blsPubKeys[i]) == false, "BLS public key is banned or not a part of LSD network");
+
+436:        require(_isNodeRunnerValid(msg.sender) == true, "Unrecognised node runner");
+
+437:        require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network");
+
+469:            require(isBLSPublicKeyPartOfLSDNetwork(_blsPublicKey) == false, "BLS public key is banned or not a part of LSD network");
+
+541:            require(isBLSPublicKeyBanned(blsPubKey) == false, "BLS public key is banned or not a part of LSD network");
+
+589:            require(isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is banned or not a part of LSD network");
+
+688:            require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
+```
 ## `abi.encode()` Costs More Gas Than `abi.encodePacked()`
 Changing `abi.encode()` to `abi.encodePacked()` can save gas considering the former pads extra null bytes at the end of the call data, which is unnecessary. Please visit the following the link delineating how `abi.encodePacked()` is more gas efficient in general:
 
@@ -821,6 +895,10 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L500
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L533
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L588
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L357
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L371
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L700
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L717
 
 ## Use Storage Instead of Memory for Structs/Arrays
 A storage pointer is cheaper since copying a state struct in memory would incur as many SLOADs and MSTOREs as there are slots. In another words, this causes all fields of the struct/array to be read from storage, incurring a Gcoldsload (2100 gas) for each field of the struct/array, and then further incurring an additional MLOAD rather than a cheap stack read. As such, declaring the variable with the storage keyword and caching any fields that need to be re-read in stack variables will be much cheaper, involving only Gcoldsload for all associated field reads. Read the whole struct/array into a memory variable only when it is being returned by the function, passed into a function that requires memory, or if the array/struct is being read from another memory array/struct. 
@@ -884,3 +962,17 @@ All other instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L508-L523
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L177-L196
+
+## Missing `constant` Visibility
+The following magic number assigned variable has been capitalized, but it is missing a constant visibility.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L158
+
+```
+    uint256 public MODULO = 100_00000;
+```
+Consider refactoring the code line as follows to save gas:
+
+```
+    uint256 public constant MODULO = 100_00000;
+```
