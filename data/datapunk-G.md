@@ -15,3 +15,8 @@
 
 ## G4. state variable can be load into stack to save sload, if used multiple times
 [`numberOfRegisteredKnots`](https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L189) 
+
+
+change `sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;` to `sETHTotalStakeForKnot[_blsPubKey] = totalStaked + _sETHAmount;`
+in https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L226
+
