@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "V_B",
+  "risk": "3",
+  "title": "Griefing attack on `lastInteractedTimestamp` value",
+  "issueId": 395,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/395"
+}
