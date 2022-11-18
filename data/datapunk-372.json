@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "datapunk",
+  "risk": "2",
+  "title": "`GiantPoolBase` keeps track of `idleETH`, but does not have recieve function to take all ETH into account",
+  "issueId": 372,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/372"
+}
