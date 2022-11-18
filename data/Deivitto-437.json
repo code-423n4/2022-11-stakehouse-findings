@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Deivitto",
+  "risk": "3",
+  "title": "value can be burned in `burnLPToken` but nothing withdrawn",
+  "issueId": 437,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/437"
+}
