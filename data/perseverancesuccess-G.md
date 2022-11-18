@@ -9,7 +9,8 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
         idleETH -= _amount;
 ```
-Change to 
+Can use unchecked because after the require, idleETH  always >= _amount 
+Propose to change to 
 ```
 require(idleETH >= _amount, "Come back later or withdraw less ETH");
 
