@@ -1,4 +1,4 @@
-Reentrancy attack may occur on withdraw ETH For Knot function
+Reentrancy attack may occur on ```withdrawETHForKnot()```
 
 Note: It wasn't clear to me whether this should be submitted as high severity or medium severity, so I thought it best to leave it up to the judges.
 
@@ -10,7 +10,7 @@ Impact: A reentrancy attack can occur when the contract fails to update its stat
 
 Proof of concept: The below scenario would be possible.
 
-Since the node runner could be a smart contract, the contract could have a malicious code so when withdrawETHForKnot get called, it goes in infinite loop in attempt to drain all the funds.
+Since the node runner could be a smart contract, the contract could have a malicious code so that when ```withdrawETHForKnot()``` get called, it goes in infinite loop in attempt to drain all the funds.
 
 ## Tools Used
 
@@ -18,4 +18,4 @@ Manual Review
 
 ## Recommended Mitigation Steps
 
-Use not reentrancy guard 
+Use a reentrancy guard 
