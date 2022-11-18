@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Bnke0x0",
+  "risk": "2",
+  "title": "Low level call returns true if the target doesn't exist",
+  "issueId": 228,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/228"
+}
