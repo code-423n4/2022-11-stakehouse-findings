@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Trust",
+  "risk": "2",
+  "title": "Medium: Users may have lock funds of up to MIN_STAKING_AMOUNT in pools.",
+  "issueId": 406,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/406"
+}
