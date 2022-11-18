@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "0x4non",
+  "risk": "3",
+  "title": "DOS via rejecting ether on `_distributeETHRewardsToUserForToken` in `beforeTokenTransfer` callback on `gMevETH` token and `StakingFundsVault`",
+  "issueId": 280,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/280"
+}
