@@ -66,7 +66,9 @@
 
 ###    Consider defining in only one contract so that values cannot become out of sync when only one location is updated. A cheap way to store constants in a single location is to create an internal constant in a library. If the variable is a local cache of another contract’s value, consider making the cache variable internal or private, which will require external users to query the contract with the source of truth, so that callers don’t get out of sync.
 
-##  [5]   It is bad practice to use numbers directly in code without explanation . 
+##  [5]   CONSTANTS SHOULD BE DEFINED RATHER THAN USING MAGIC NUMBERS
+
+###    It is bad practice to use numbers directly in code without explanation . 
 
 > There are 9  instances of this issue:
 
@@ -176,6 +178,58 @@
 ##
 
 ##  [9]  LACK OF ZERO CHECKS FOR NEW ADDRESSES IN FUNCTIONS. THERE ARE MANY FUNCTIONS NOT CHECKING ZERO ADDRESS BEFORE ASSIGNING THE VALUES TO VARIABLES. 
+
+##
+
+## [10]  LINES ARE TOO LONG
+
+###   Usually lines in source code are limited to 80 characters. Today’s screens are much larger so it’s reasonable to stretch this in some cases. Since the files will most likely reside in GitHub, and GitHub starts using a scroll bar in all cases when the length is over 164 characters, the lines below should be split when they reach that length
+
+> There are 6  instances of this issue:
+
+>FILE:  2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+                 35:    /// @dev This contract can be extended to allow lending and borrowing of time slots for borrower to redeem any revenue generated within the specified window
+
+                 95:   /// @notice Syndicate deployer can highlight addresses that get priority for staking free floating house sETH up to a certain block before anyone can do it
+
+                116:   /// @notice Whether a BLS public key, that has been previously registered, is no longer part of the syndicate and its shares (free floating or SLOT) cannot earn any more rewards
+
+                119:   /// @notice Once a BLS public key is no longer part of the syndicate, the accumulated ETH per free floating SLOT share is snapshotted so historical earnings can be drawn down correctly
+
+                 398:    /// @notice Preview the amount of unclaimed ETH available for a collatearlized SLOT staker against a KNOT which factors in unprocessed rewards from new ETH sent to contract
+
+                 490:    /// Given an amount of ETH allocated to the collateralized SLOT owners of a KNOT, distribute this amongs the current set of collateralized owners (a dynamic set of addresses and balances)
+
+##
+
+##  [11]  UPGRADE OPEN ZEPPELIN CONTRACT DEPENDENCY
+
+>An outdated OZ version is used (which has known vulnerabilities, see <https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories>).
+
+The solution uses:
+
+   "@openzeppelin/contracts": "4.8.0",
+
+##
+
+## [12] MISSING NATSPEC
+
+Code should include NatSpec
+
+IERC20.sol::1 => // SPDX-License-Identifier: Apache-2.0
+
+##
+
+
+
+
+
+
+
+
+
+  
 
 
 
