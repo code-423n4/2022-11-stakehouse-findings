@@ -846,4 +846,38 @@ Recommended Migration Step :
         }
     }
 
+##
+
+## G[25]  <ARRAY>.LENGTH SHOULD NOT BE LOOKED UP IN EVERY LOOP OF A FOR-LOOP
+      
+The overheads outlined below are PER LOOP, excluding the first loop
+
+storage arrays incur a Gwarmaccess (100 gas)
+memory arrays use MLOAD (3 gas)
+calldata arrays use CALLDATALOAD (3 gas)
+Caching the length changes each of these to a DUP<N> (3 gas), and gets rid of the extra DUP<N> needed to store the stack offset
+
+> There are 40 instances of this issue:
+
+##
+
+## G[25]  OPTIMIZE NAMES TO SAVE GAS
+
+   ###  public/external function names and public member variable names can be optimized to save gas. 
+           renaming functions to have lower method IDs will save 22 gas per call
+
+> So Many Functions and state variable names are so big . If we optimize the function and variable names can save the gas fee.
+
+##
+
+## G[26]  EMPTY BLOCKS SHOULD BE REMOVED OR EMIT SOMETHING
+
+    Empty receive()/fallback() payable functions that are not used, can be removed to save deployment gas.
+
+2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+receive() external payable {
+        // No logic here because one cannot assume that more than 21K GAS limit is forwarded
+    }
+
 
