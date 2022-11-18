@@ -89,3 +89,8 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/GiantMevAndFeesPool.sol#L184
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/syndicate/Syndicate.sol#L275
 ==========================================================
+
+Boolean constant: Use of Boolean constants (true/false) in code (e.g. conditionals) is indicative of flawed logic. (see here: https://github.com/crytic/slither/wiki/Detector-Documentation#misuse-of-a-boolean-constant )
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L691
+==========================================================
