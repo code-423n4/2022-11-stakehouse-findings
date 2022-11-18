@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "3",
+  "title": "withdrawETH() in GiantPoolBase don't call _distributeETHRewardsToUserForToken() or _onWithdraw() which would make users to lose their remaining rewards ",
+  "issueId": 260,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/260"
+}
