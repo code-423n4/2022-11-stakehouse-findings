@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "3",
+  "title": "fund lose in function bringUnusedETHBackIntoGiantPool() of GiantSavETHVaultPool ETH gets back to giant pool but the value of idleETH don't increase",
+  "issueId": 229,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/229"
+}
