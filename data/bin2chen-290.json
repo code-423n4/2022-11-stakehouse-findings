@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "bin2chen",
+  "risk": "3",
+  "title": "_distributeETHRewardsToUserForToken() Wrong set claimed[_user][_token]",
+  "issueId": 290,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/290"
+}
