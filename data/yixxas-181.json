@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "yixxas",
+  "risk": "3",
+  "title": "Reentrant is possible in `withdrawETHForKnot()`",
+  "issueId": 181,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/181"
+}
