@@ -332,10 +332,35 @@ This feature has since been updated in the Solidity Wizard following the UUPS vu
         _disableInitializers();
     }
 ```
-Here are the contract instances with missing `_disableInitializers()`:
+Here are 5 contract instances with missing `_disableInitializers()` found.
 
 [LPToken.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol)
 [OwnableSmartWallet.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol)
 [SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
 [Syndicate.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol)
 [LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
+
+## TODO
+Open TODO can point to an architecture or programming issue needing to be resolved. It is recommended resolving them before deploying.
+
+Here is 1 instance found.
+
+[Syndicate.sol#L195](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L195)
+
+```
+195:            // todo - check else case for any ETH lost
+```
+## `type(uint256).max` OVER `2 ** 256 - 1`
+It is recommended using `type(uint256).max` instead of `(2 ** 256) - 1` for the maximum integer value in Solidity.
+
+Here is 1 instance found.
+
+[LiquidStakingManager.sol#L870](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L870)
+
+```
+870:        sETH.approve(syndicate, (2 ** 256) - 1);
+```
+## INSUFFICIENT TESTING
+The repositories under review lack sufficient and appropriate testings, which increase the likelihood of errors in the development process and makes the code more difficult to review.
+
+Consider making sure that the unit tests cover all public functions at least once, as well as all known corner cases. Additionally, integrate coverage analysis tools into the development process and regularly review the coverage. It is crucial to have a full test coverage that includes the edge cases and failed scenarios that are at times hard to find with manual reviews.
