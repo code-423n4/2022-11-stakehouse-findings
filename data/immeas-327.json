@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "immeas",
+  "risk": "2",
+  "title": "a malicious user can block a node runners key with `3.999 eth + 1 wei`",
+  "issueId": 327,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/327"
+}
