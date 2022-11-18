@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "pashov",
+  "risk": "2",
+  "title": "Centralisation vulnerability in `updateDAORevenueCommission()`",
+  "issueId": 342,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/342"
+}
