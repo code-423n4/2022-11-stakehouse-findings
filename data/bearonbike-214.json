@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "bearonbike",
+  "risk": "2",
+  "title": "Banned BLS public key not checked in LiquidStakingManager.registerBLSPublicKeys()",
+  "issueId": 214,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/214"
+}
