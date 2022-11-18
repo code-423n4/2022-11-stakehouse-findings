@@ -97,3 +97,8 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721
 As it does not appear that it has been completed by the dev, the function currently has an empty else body, which could mean if it reaches this piece of code, the update could silenlty fail to updateAccruedETHPerShares, leading to the user possibly thinking the update has gone through but it actually not, this could lead to users also recieving the wrong accruedETHPerShares if indeed this value was needed to be updated to more or less than the current value.
 
 
+### function allows arbituary value
+
+In the follwing function there is no maximum limit to how much DAORevenueCommission the dao can take (it is crrenttly allowed to be an arbituary value) consider adding a maximum value the dao is allowed to mak in commision so that it cannot be simply set to 100%.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L249
