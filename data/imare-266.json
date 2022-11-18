@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "imare",
+  "risk": "3",
+  "title": "All ``dETH`` tokens of a ``savETHVault`` pool can be drained trough the ``GiantSavETHVaultPool`` pool",
+  "issueId": 266,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/266"
+}
