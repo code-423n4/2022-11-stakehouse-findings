@@ -5,9 +5,9 @@ Lines of code: https://github.com/code-423n4/2022-11-stakehouse/blob/main/contra
 
 State variable:  numberOfRegisteredKnots 
 
-Deployment gas before: 3219178
+Deployment gas before: 3219394
 
-Deployment gas used after: 3219394
+Deployment gas used after: 3219178
 
 Gas Saved: 216
 ```
@@ -17,11 +17,11 @@ Lines of code: https://github.com/code-423n4/2022-11-stakehouse/blob/main/contra
 
 State variable:  totalFreeFloatingShares 
 
-Deployment gas before: 3219178
+Deployment gas before: 3219394
 
 Deployment gas used after: 3217654
 
-Gas Saved: 1524
+Gas Saved: 1740
 ```
 
 We can optimize the above functions by caching the state variables to a memory variables.
