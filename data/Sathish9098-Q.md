@@ -62,81 +62,11 @@
 
 ##
 
-## [4]  REQUIRE STATEMENTS RETURNS WRONG OR MEANING LESS  ERROR COMMANDS 
-
-> There are   instances of this issue:
-
-> FILE: 2022-11-stakehouse/contracts/liquid-staking/GiantLP.sol
-
-      30:    require(msg.sender == pool, "Only pool");
-
-      35:    require(msg.sender == pool, "Only pool");
-
-##
-
-##   [5] CONSTANT REDEFINED ELSEWHERE
+##   [4] CONSTANT REDEFINED ELSEWHERE
 
 ###    Consider defining in only one contract so that values cannot become out of sync when only one location is updated. A cheap way to store constants in a single location is to create an internal constant in a library. If the variable is a local cache of another contract’s value, consider making the cache variable internal or private, which will require external users to query the contract with the source of truth, so that callers don’t get out of sync.
 
-##  
-
-## [6]  IN BEST CODE PRACTICE FIRST NEED TO CHECK CONDITIONS THEN CAN ASSIGN VALUES FOR VARIABLES.
-
-###   In batchDepositETHForStaking() the value of the numOfVaults is assigned before checking the conditions. This not a best code practice. If the first require statement failed then no use for numOfVaults  assignment. 
-
-> There are 3  instances of this issue:
-
-        2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
-
-       function batchDepositETHForStaking(
-        address[] calldata _stakingFundsVault,
-        uint256[] calldata _ETHTransactionAmounts,
-        bytes[][] calldata _blsPublicKeyOfKnots,
-        uint256[][] calldata _amounts
-         ) external {
-         uint256 numOfVaults = _stakingFundsVault.length;   //@audit 
-        require(numOfVaults > 0, "Zero vaults");
-        require(numOfVaults == _blsPublicKeyOfKnots.length, "Inconsistent lengths");
-        require(numOfVaults == _amounts.length, "Inconsistent lengths");
-
-Proof Of Concept : 
-  
-###  The numOfVaults  should be assigned after all require conditions true. 
-
-        function batchDepositETHForStaking(
-        address[] calldata _stakingFundsVault,
-        uint256[] calldata _ETHTransactionAmounts,
-        bytes[][] calldata _blsPublicKeyOfKnots,
-        uint256[][] calldata _amounts
-        ) external {
-       require(numOfVaults > 0, "Zero vaults");
-        require(numOfVaults == _blsPublicKeyOfKnots.length, "Inconsistent lengths");
-        require(numOfVaults == _amounts.length, "Inconsistent lengths");
-        uint256 numOfVaults = _stakingFundsVault.length;    // AUDIT numOfRotations 
-
-
-### Same problem in  function batchRotateLPTokens() 
-
-       uint256 numOfRotations = _stakingFundsVaults.length;  // AUDIT numOfRotations 
-        require(numOfRotations > 0, "Empty arrays");
-        require(numOfRotations == _oldLPTokens.length, "Inconsistent arrays");
-        require(numOfRotations == _newLPTokens.length, "Inconsistent arrays");
-        require(numOfRotations == _amounts.length, "Inconsistent arrays");
-        require(lpTokenETH.balanceOf(msg.sender) >= 0.5 ether, "No common interest");
-        for (uint256 i; i < numOfRotations; ++i) {
-            StakingFundsVault(payable(_stakingFundsVaults[i])).batchRotateLPTokens(_oldLPTokens[i], _newLPTokens[i], _amounts[i]);
-        }
-
-###  2022-11-stakehouse/contracts/liquid-staking/GiantPoolBase.sol
-
-        function withdrawLPTokens(LPToken[] calldata _lpTokens, uint256[] calldata _amounts) external {
-        uint256 amountOfTokens = _lpTokens.length;     // @AUDIT amountOfTokens 
-        require(amountOfTokens > 0, "Empty arrays");
-        require(amountOfTokens == _amounts.length, "Inconsistent array lengths");
-
-##
-
-##  [7]   It is bad practice to use numbers directly in code without explanation . Here 0.5 Ethers directly check with lpTokenETH.balanceOf(msg.sender) .  No explanation about 0.5 ether check . 
+##  [5]   It is bad practice to use numbers directly in code without explanation . 
 
 > There are 9  instances of this issue:
 
@@ -167,11 +97,11 @@ Proof Of Concept :
 
 ## 
 
-## [8]  Solidity pragma versioning should be upgraded to latest available version. Currently the solidity version in contracts is ^0.8.13 which was found to possess some bugs.  The latest solidity version is 0.8.17 
+## [6]  Solidity pragma versioning should be upgraded to latest available version. Currently the solidity version in contracts is ^0.8.13 which was found to possess some bugs.  The latest solidity version is 0.8.17 
 
 ##
 
-## [9]   INTERFACE FILES SHOULD USE FIXED COMPILER VERSIONS, NOT FLOATING ONES
+## [7]   INTERFACE FILES SHOULD USE FIXED COMPILER VERSIONS, NOT FLOATING ONES
 
 > There are 6  instances of this issue:
 
@@ -197,7 +127,7 @@ Proof Of Concept :
 
 ##
 
-## [10]  SPDX-License-Identifier: STATEMENT SHOULD BE DECLARED BEFORE pragma solidity ^0.8.13; DECLARATIONS . IN MANY INTERFACES LICENSE STATEMENT DECLARED BEFORE PRAGMA STATEMENT . THE BEST CODE PRACTICE IS license DECLARATIONS BEFORE pragma STATEMENT
+## [8]  SPDX-License-Identifier: STATEMENT SHOULD BE DECLARED BEFORE pragma solidity ^0.8.13; DECLARATIONS . IN MANY INTERFACES LICENSE STATEMENT DECLARED BEFORE PRAGMA STATEMENT . THE BEST CODE PRACTICE IS license DECLARATIONS BEFORE pragma STATEMENT
 
 > There are 9  instances of this issue:
 
@@ -245,7 +175,7 @@ Proof Of Concept :
       
 ##
 
-##  [11]  LACK OF ZERO CHECKS FOR NEW ADDRESSES IN FUNCTIONS. THERE ARE MANY FUNCTIONS NOT CHECKING ZERO ADDRESS BEFORE ASSIGNING THE VALUES TO VARIABLES. 
+##  [9]  LACK OF ZERO CHECKS FOR NEW ADDRESSES IN FUNCTIONS. THERE ARE MANY FUNCTIONS NOT CHECKING ZERO ADDRESS BEFORE ASSIGNING THE VALUES TO VARIABLES. 
 
-##  
+
 
