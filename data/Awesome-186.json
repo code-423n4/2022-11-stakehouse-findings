@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Awesome",
+  "risk": "2",
+  "title": "`updateNodeRunnerWhitelistStatus` will alway revert",
+  "issueId": 186,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/186"
+}
