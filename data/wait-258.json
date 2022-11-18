@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "wait",
+  "risk": "3",
+  "title": "Funds in GiantMevAndFeesPool and GiantSavETHVaultPool can be drained by impersonating malicious vault contract",
+  "issueId": 258,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/258"
+}
