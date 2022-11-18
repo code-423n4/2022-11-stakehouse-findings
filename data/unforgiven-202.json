@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "unforgiven",
+  "risk": "2",
+  "title": "deny others(griefing) from calling withdrawLPTokens() in GiantPoolBase and withdrawing LPtoken by sending some token to them(reset lastInteractedTimestamp)",
+  "issueId": 202,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/202"
+}
