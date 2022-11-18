@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "yixxas",
+  "risk": "3",
+  "title": "Wrong logic in `isStaleLiquidity` causes ETH withdrawals to be not possible after 30 minutes",
+  "issueId": 172,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/172"
+}
