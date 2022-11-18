@@ -514,8 +514,9 @@ Recommended Migration Step :
         emit StakehouseCreated(stakehouseTicker, stakehouse);                                     //@Audit  stakehouse
     }
 
+##
 
-##   _createLSDNStakehouse()  **syndicate** state variable should be cached . state syndicate used two times 
+## [G16]    _createLSDNStakehouse()  **syndicate** state variable should be cached . state syndicate used two times 
 
 <https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L816-L876 >
 
@@ -523,7 +524,7 @@ Recommended Migration Step :
 
 > See @audit 
 
-## [G16]  address[] memory priorityStakers = new address[](0);
+        address[] memory priorityStakers = new address[](0);
         bytes[] memory initialKnots = new bytes[](1);
         initialKnots[0] = _blsPublicKeyOfKnot;
         syndicate = syndicateFactory.deploySyndicate(             /// @Audit  syndicate 
@@ -537,4 +538,101 @@ Recommended Migration Step :
         sETH.approve(syndicate, (2 ** 256) - 1);                /// @Audit  syndicate 
             address(this),
  
+##
+
+## [G17] State varibale **dao** should be cached with stack variable 
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> See @Audit
+
+      function updateDAOAddress(address _newAddress) external onlyDAO {
+        require(_newAddress != address(0), "Zero address");
+        require(_newAddress != dao, "Same address");  // @Audit dao 
+
+        emit UpdateDAOAddress(dao, _newAddress);  // @Audit dao 
+
+        dao = _newAddress;  // @Audit dao 
+    }
+
+
+       function rotateNodeRunnerOfSmartWallet(address _current, address _new, bool _wasPreviousNodeRunnerMalicious) external {
+        require(_new != address(0) && _current != _new, "New is zero or current");
+
+        address wallet = smartWalletOfNodeRunner[_current];
+        require(wallet != address(0), "Wallet does not exist");
+        require(_current == msg.sender || dao == msg.sender, "Not current owner or DAO");    // @Audit dao 
+
+        address newRunnerCurrentWallet = smartWalletOfNodeRunner[_new];
+        require(newRunnerCurrentWallet == address(0), "New runner has a wallet");
+
+        smartWalletOfNodeRunner[_new] = wallet;
+        nodeRunnerOfSmartWallet[wallet] = _new;
+
+        delete smartWalletOfNodeRunner[_current];
+
+        if (msg.sender == dao && _wasPreviousNodeRunnerMalicious) {  // @Audit dao 
+            bannedNodeRunners[_current] = true;
+            emit NodeRunnerBanned(_current);
+        }
+
+        emit NodeRunnerOfSmartWalletRotated(wallet, _current, _new);
+    }
+
+##
+
+## [G18]  State variable gatekeeper should be cached 
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+<https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/LiquidStakingManager.sol#L854-L856>
+
+##
+
+##   [G19]  State variable enableWhitelisting should be cached . We can use stack variable instead of call state variable 
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> @See @Audit
+
+       function updateWhitelisting(bool _changeWhitelist) external onlyDAO returns (bool) {
+        require(_changeWhitelist != enableWhitelisting, "Unnecessary update to same status"); // @Audit enableWhitelisting
+        enableWhitelisting = _changeWhitelist;                                                       // @Audit enableWhitelisting
+        emit WhitelistingStatusChanged(msg.sender, enableWhitelisting);                 // @Audit enableWhitelisting
+
+        return enableWhitelisting;                                                                                 // @Audit enableWhitelisting
+        } 
+
+##
+
+## G[20]   State variable daoCommissionPercentage  should be cached . We can use stack variable instead of call state variable 
+
+> File:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
+
+> @See @Audit
+
+       function _calculateCommission(uint256 _received) internal virtual view returns (uint256 _nodeRunner, uint256 _dao) {
+        require(_received > 0, "Nothing received");
+
+        if (daoCommissionPercentage > 0) {                      // @Audit daoCommissionPercentage 
+            uint256 daoAmount = (_received * daoCommissionPercentage) / MODULO;            // @Audit daoCommissionPercentage
+            uint256 rest = _received - daoAmount;
+            return (rest, daoAmount);
+        }
+
+        return (_received, 0);
+      }
+
+function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
+        require(_commissionPercentage <= MODULO, "Invalid commission");
+
+        emit DAOCommissionUpdated(daoCommissionPercentage, _commissionPercentage);  // @Audit daoCommissionPercentage
+
+        daoCommissionPercentage = _commissionPercentage;          // @Audit daoCommissionPercentage
+    }
+
+##
+
+## G[21]  
+
 
