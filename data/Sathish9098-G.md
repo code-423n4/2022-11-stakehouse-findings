@@ -3,7 +3,7 @@
 
 ### In Solidity 0.8+, there’s a default overflow check on unsigned integers. It’s possible to uncheck this in for-loops and save some gas at each iteration, but at the cost of some code readability, as this uncheck cannot be made inline. This saves 30-40 gas per loop
 
-> There are 30 instances of this issue:
+> There are 40 instances of this issue:
 
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/ETHPoolLPFactory.sol
@@ -78,7 +78,29 @@
 
           116  :   for (uint256 i; i < numOfTokens; ++i) {
 
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
 
+          211:   for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+          259:    for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+         301:     for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+         346:     for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+         420:     for (uint256 i; i < numberOfCollateralisedSlotOwnersForKnot; ++i) {
+
+         513:     for (uint256 i; i < numberOfCollateralisedSlotOwnersForKnot; ++i) {
+
+        560:     for (uint256 i; i < knotsToRegister; ++i) {
+
+       585:     for (uint256 i; i < _priorityStakers.length; ++i) {
+
+       598:    for (uint256 i; i < _blsPublicKeys.length; ++i) {
+
+       648:    for (uint256 i; i < _blsPubKeys.length; ++i) {
+
+       
 ###
 
 ##  [G2]   CAN CHECK MORE FAILURE POSSIBILITY CONDITIONS FIRST INSTEAD OF address(0) CHECK . FOR address(0) CONDITIONS FAILURE POSSIBILITY  IS LESS COMPARE TO OTHER require CONDITION CHECKS . IN THIS WAY WE CAN IGNORE  SOME REQUIRE CONDITION CHECKS . CAN SAVE MORE VOLUME OF THE GAS.  WE CAN CHECK address(0) CHECK IN THE LAST 
@@ -108,7 +130,7 @@
 
 ##   [G3]  <X> += <Y> COSTS MORE GAS THAN <X> = <X> + <Y> . SAME FOR  <X> -= <Y> COSTS MORE GAS THAN <X> = <X> - <Y>
 
-> There are 17 instances of this issue:
+> There are 30 instances of this issue:
 
  > FILE : 2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
@@ -154,6 +176,36 @@
 
            71:     totalAmount += amount;
 
+> FILE:  2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+         185:    accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed);
+
+         190:      accumulatedETHPerCollateralizedSlotPerKnot += collateralizedUnprocessed;
+
+         226:     sETHTotalStakeForKnot[_blsPubKey] += _sETHAmount;
+
+         227:     sETHStakedBalanceForKnot[_blsPubKey][_onBehalfOf] += _sETHAmount;
+
+         269:    totalFreeFloatingShares -= _sETHAmount;
+
+         272:   sETHTotalStakeForKnot[_blsPubKey] -= _sETHAmount;
+
+         273:    sETHStakedBalanceForKnot[_blsPubKey][msg.sender] -= _sETHAmount;]]];
+
+         317:     totalClaimed += unclaimedUserShare;
+
+         430:     currentAccrued +=
+                        balance * unprocessedForKnot / (4 ether - currentSlashedAmount);
+
+        511:     accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] += unprocessedETHForCurrentKnot;
+
+       521:      accruedEarningPerCollateralizedSlotOwnerOfKnot[_blsPubKey][collateralizedOwnerAtIndex] +=
+                            balance * unprocessedETHForCurrentKnot / (4 ether - currentSlashedAmount);
+
+       538:    numberOfRegisteredKnots += knotsToRegister;
+
+       658:    totalClaimed += unclaimedUserShare;
+
 ##      
 
 ##  [G4]   lpTokenETH   State variable can be cached with local stack variables. It will save the gas fee
@@ -174,7 +226,7 @@
 
 <https://docs.soliditylang.org/en/v0.8.7/control-structures.html#checked-or-unchecked-arithmetic>    
 
-> There are 12 instances of this issue:    
+> There are 24 instances of this issue:    
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/GiantMevAndFeesPool.sol
 
@@ -208,14 +260,41 @@
 
              174:   redemptionValue = (dETHDetails.savETHBalance * _amount) / 24 ether;
 
-           
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+            189:     uint256 collateralizedUnprocessed = ((totalEthPerSlotType - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+
+            312:     uint256 unclaimedUserShare = userShare - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][msg.sender];
+
+            369:      return userShare - sETHUserClaimForKnot[_blsPubKey][_user];
+
+            395:        return userShare - sETHUserClaimForKnot[_blsPubKey][_staker];
+
+            406:        uint256 accumulatedSoFar = accumulatedETHPerCollateralizedSlotPerKnot
+                    + ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+
+            409:       uint256 unprocessedForKnot = accumulatedSoFar - totalETHProcessedPerCollateralizedKnot[_blsPubKey];
+
+            437:      return currentAccrued - claimedPerCollateralizedSlotOwnerOfKnot[_blsPubKey][_staker];
+
+           442:      return calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerFreeFloating;
+
+           447:    return ((calculateETHForFreeFloatingOrCollateralizedHolders() - lastSeenETHPerCollateralizedSlotPerKnot) / numberOfRegisteredKnots);
+
+           493:    uint256 unprocessedETHForCurrentKnot =
+                    accumulatedETHPerCollateralizedSlotPerKnot - totalETHProcessedPerCollateralizedKnot[_blsPubKey];
+
+           621:     totalFreeFloatingShares -= sETHTotalStakeForKnot[_blsPublicKey];
+
+           624:    numberOfRegisteredKnots -= 1;
+
 ##
 
 ##   [G6]    DON’T COMPARE BOOLEAN EXPRESSIONS TO BOOLEAN LITERALS
 
 ###     if (<x> == true) => if (<x>), if (<x> == false) => if (!<x>)
 
-> There are 16 instances of this issue:   
+> There are 18 instances of this issue:   
 
 > FILE:   2022-11-stakehouse/contracts/liquid-staking/GiantSavETHVaultPool.sol 
 
@@ -263,14 +342,20 @@
 
            64:   require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network");
 
-          84: require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key is banned or not a part of LSD 
+          84:    require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key is banned or not a part of LSD 
          network");
+
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+         622:   if (isKnotRegistered[_blsPublicKey] == false) revert KnotIsNotRegisteredWithSyndicate();
+
+         623:    if (isNoLongerPartOfSyndicate[_blsPublicKey] == true) revert KnotHasAlreadyBeenDeRegistered();
 
  ##
 
-##  [G7]   Instead of using operator && on single require check . Using multiple require checks can save more gas: 
+##  [G7]   Instead of using operator && on single require check . Using multiple require of if checks can save more gas: 
 
-> There are 5 instances of this issue: 
+> There are 9 instances of this issue: 
 
 > FILE:   2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
@@ -286,10 +371,20 @@
 
              215:  if (i == 0 && !Syndicate(payable(liquidStakingNetworkManager.syndicate())).isNoLongerPartOfSyndicate(_blsPubKeys[i])) {
 
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
 
+             218:   if (block.number < priorityStakingEndBlock && !isPriorityStaker[_onBehalfOf]) revert NotPriorityStaker();
+
+            500:    if (unprocessedETHForCurrentKnot > 0 && !isNoLongerPartOfSyndicate[_blsPubKey]) {
+
+            533:      if (!isActive && !isNoLongerPartOfSyndicate[_blsPubKey]) {
+
+           588:     if (i > 0 && staker < _priorityStakers[i-1]) revert DuplicateArrayElements();
+
+           
 Recommended Migration Step : 
 
-  POSSIBLE TO SPLIT THE REQUIRE CONDITIONS. TO SAVE MORE GAS FEE . IF FIRST CONDITION FAILED THEN OTHER CONDITION CHECKS SKIPED . 
+  POSSIBLE TO SPLIT THE REQUIRE OR IF CONDITIONS. TO SAVE MORE GAS FEE . IF FIRST CONDITION FAILED THEN OTHER CONDITION CHECKS SKIPED . 
 
              require(_new != address(0),"New is zero");
 
@@ -300,7 +395,7 @@ Recommended Migration Step :
 
 ## [G8]    For || operator don't want to check all conditions . If any one condition true then the overall condition checks become true. Once one condition is true then no need to check remaining conditions. Loss more gas for every condition checks after one condition is  true . 
 
-> There are 3 instances of this issue: 
+> There are 4 instances of this issue: 
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
@@ -316,13 +411,17 @@ Recommended Migration Step :
             "Cannot burn LP tokens"
             );
 
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+           216:  if (!isKnotRegistered[_blsPubKey] || isNoLongerPartOfSyndicate[_blsPubKey]) revert KnotIsNotRegisteredWithSyndicate();
+
 ##
 
 ##  [G9]  FUNCTIONS GUARANTEED TO REVERT WHEN CALLED BY NORMAL USERS CAN BE MARKED PAYABLE
 
-###  If a function modifier such as onlyDeployer is used, the function will revert if a normal user tries to pay the function. Marking the function as payable will lower the gas cost for legitimate callers because the compiler will not include checks for whether a payment was provided. The extra opcodes avoided are CALLVALUE(2),DUP1(3),ISZERO(3),PUSH2(3),JUMPI(10),PUSH1(3),DUP1(3),REVERT(0),JUMPDEST(1),POP(2), which costs an average of about 21 gas per call to the function, in addition to the extra deployment cost.
+###  If a function modifier such as onlyDeployer, onlyOwner is used, the function will revert if a normal user tries to pay the function. Marking the function as payable will lower the gas cost for legitimate callers because the compiler will not include checks for whether a payment was provided. The extra opcodes avoided are CALLVALUE(2),DUP1(3),ISZERO(3),PUSH2(3),JUMPI(10),PUSH1(3),DUP1(3),REVERT(0),JUMPDEST(1),POP(2), which costs an average of about 21 gas per call to the function, in addition to the extra deployment cost.
 
-> There are 2 instances of this issue: 
+> There are 5 instances of this issue: 
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/LPToken.sol
 
@@ -335,15 +434,34 @@ Recommended Migration Step :
          _burn(_recipient, _amount);
         }
 
+
+> FILE:  2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+      function registerKnotsToSyndicate(
+        bytes[] calldata _newBLSPublicKeyBeingRegistered
+      ) external onlyOwner {
+
+
+     function deRegisterKnots(bytes[] calldata _blsPublicKeys) external onlyOwner {
+        updateAccruedETHPerShares();
+        _deRegisterKnots(_blsPublicKeys);
+    }
+
+   function updatePriorityStakingBlock(uint256 _endBlock) external onlyOwner {
+        updateAccruedETHPerShares();
+        priorityStakingEndBlock = _endBlock;
+    }
+
+
 ##
 
-## [G10]  State variable PRECISION can be catched with stack variable 
+## [G10]  State variable PRECISION can be cached with stack variable 
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/SyndicateRewardsProcessor.sol
 
-        45:    return ((newAccumulatedETH * _balanceOfSender) / PRECISION) - claim;
+        45:    return ((newAccumulatedETH * _balanceOfSender) / PRECISION) - claim;  // @Audit PRECISION
    
-        43:   uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);
+        43:   uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);   // @Audit PRECISION
 
 
 ##
@@ -352,10 +470,10 @@ Recommended Migration Step :
 
 >FILE:  2022-11-stakehouse/contracts/liquid-staking/SyndicateRewardsProcessor.sol
 
-          79:    uint256 unprocessed = received - totalETHSeen;
+          79:    uint256 unprocessed = received - totalETHSeen;   // @Audit totalETHSeen
 
-          87:    totalETHSeen = received;
-
+          87:    totalETHSeen = received;    // @Audit totalETHSeen
+ 
 ##
 
 ##   [G12]   State variable  liquidStakingNetworkManager  can be cached with stack variable 
@@ -363,15 +481,17 @@ Recommended Migration Step :
 >FILE:    2022-11-stakehouse/contracts/liquid-staking/StakingFundsVault.sol
 
                 require(
-                liquidStakingNetworkManager.isBLSPublicKeyBanned(_blsPubKeys[i]) == false,
+                liquidStakingNetworkManager.isBLSPublicKeyBanned(_blsPubKeys[i]) == false,     // @Audit liquidStakingNetworkManager
                 "Unknown BLS public key"
                 );
 
-               215:    if (i == 0 && !Syndicate(payable(liquidStakingNetworkManager.syndicate())).isNoLongerPartOfSyndicate(_blsPubKeys[i])) {
+               215:    if (i == 0 && !Syndicate(payable(liquidStakingNetworkManager.syndicate())).isNoLongerPartOfSyndicate(_blsPubKeys[i])) { 
+
+  // @Audit liquidStakingNetworkManager
 
 
               _claimFundsFromSyndicateForDistribution(
-                    liquidStakingNetworkManager.syndicate(),
+                    liquidStakingNetworkManager.syndicate(),    // @Audit liquidStakingNetworkManager
                     _blsPubKeys
                 );
 
@@ -379,7 +499,7 @@ Recommended Migration Step :
 
 ## [G13]   IF WE NEED TO INCREASE OR DECREASE STATE VARIBALE BY 1 WE CAN USE ++X OR --X   INSTEAD OF (X)+= 1  OR (X)- = 1  . IT WILL COST MORE GAS FEE. IN THIS WAY WE CAN SAVE 226 gas FOR EVERY EXPRESSIONS .
 
-> There are 5 instances of this issue: 
+> There are 6 instances of this issue: 
 
 > FILE:  2022-11-stakehouse/contracts/liquid-staking/LiquidStakingManager.sol
 
@@ -392,6 +512,10 @@ Recommended Migration Step :
        770:        stakedKnotsOfSmartWallet[smartWallet] += 1;
 
        615:       stakedKnotsOfSmartWallet[smartWallet] -= 1;
+
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+       624:    numberOfRegisteredKnots -= 1;
 
 ##  
 
@@ -633,6 +757,43 @@ function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 
 ##
 
-## G[21]  
+## G[21]   calldata can be used instead of memory. To save a gas cost .
+
+
+> There are 6 instance for this problem:  
+   
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+        337:     function updateCollateralizedSlotOwnersAccruedETH(bytes memory _blsPubKey) external {
+
+       343:     function batchUpdateCollateralizedSlotOwnersAccruedETH(bytes[] memory _blsPubKeys) external {
+
+      359:     function calculateUnclaimedFreeFloatingETHShare(bytes memory _blsPubKey, address _user) public view returns (uint256) {
+
+
+        469:    function _initialize(
+          address _contractOwner,
+        uint256 _priorityStakingEndBlock,
+        address[] memory _priorityStakers,
+        bytes[] memory _blsPubKeysForSyndicateKnots
+        ) internal {
+
+
+     491:   function _updateCollateralizedSlotOwnersLiabilitySnapshot(bytes memory _blsPubKey) internal {
+
+    555:    function _registerKnotsToSyndicate(bytes[] memory _blsPubKeysForSyndicateKnots) internal {
+
+ 
+
+##
+
+## [G22]    DIVISION BY TWO SHOULD USE BIT SHIFTING
+
+###   <x> / 2 is the same as <x> >> 1. While the compiler uses the SHR opcode to accomplish both, the version that uses division incurs an overhead of 20 gas due to JUMPs to and from a compiler utility function that introduces checks which can be avoided by using unchecked {} around the division by two
+
+> FILE: 2022-11-stakehouse/contracts/syndicate/Syndicate.sol
+
+       378:     return ethPerKnot / 2;
+
 
 
