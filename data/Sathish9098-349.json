@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Sathish9098",
+  "risk": "2",
+  "title": "numberOfRegisteredKnots length is increased before the all knots added . If (isKnotRegistered[blsPubKey]) true the current knot can't be added to syndicate since its already registered",
+  "issueId": 349,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/349"
+}
