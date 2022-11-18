@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "immeas",
+  "risk": "3",
+  "title": "an early staker in `StakingFundsVault` can take other stakers `eth`",
+  "issueId": 387,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/387"
+}
