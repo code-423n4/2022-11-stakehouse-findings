@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "immeas",
+  "risk": "2",
+  "title": "`LPTokens` for `StakingFundsVault` can be rotated above max",
+  "issueId": 329,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/329"
+}
