@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "RaymondFam",
+  "risk": "2",
+  "title": "`updateNodeRunnerWhitelistStatus()` Will Always Revert on the Second Require Check",
+  "issueId": 177,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/177"
+}
