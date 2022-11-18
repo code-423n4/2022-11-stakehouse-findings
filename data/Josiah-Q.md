@@ -87,6 +87,38 @@ Here are some of the `@param` deficient instances found amidst numerous cases th
 948:    function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 ```
 ## SANITY CHECKS
-Zero value on top of zero address checks implemented at the constructor could avoid human errors leading to non-functional calls associated with the mistakes. This is especially so when the incidents entail immutable variables preventing them from getting reassigned that could end up having the protocol redeploy the contract.
+Zero address checks implemented at the constructor could avoid human errors leading to non-functional calls associated with the mistakes. This is especially so when the incidents entail immutable variables preventing them from getting reassigned that could end up having the protocol redeploy the contract.
 
 Here are the 6 instances found.
+
+[OptionalHouseGatekeeper.sol#L15](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/OptionalHouseGatekeeper.sol#L15)
+
+```
+15:        liquidStakingManager = ILiquidStakingManager(_manager);
+```
+[SavETHVaultDeployer.sol#L15](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVaultDeployer.sol#L15)
+
+```
+15:        implementation = address(new SavETHVault());
+```
+[StakingFundsVaultDeployer.sol#L15](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVaultDeployer.sol#L15)
+
+```
+15:        implementation = address(new StakingFundsVault());
+```
+[GiantLP.sol#L25-L26](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L25-L26)
+
+```
+25:        pool = _pool;
+26:        transferHookProcessor = ITransferHookProcessor(_transferHookProcessor); 
+```
+[SyndicateFactory.sol#L17](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/SyndicateFactory.sol#L17)
+
+```
+17:        syndicateImplementation = _syndicateImpl;
+```
+[GiantMevAndFeesPool.sol#L19](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantMevAndFeesPool.sol#L19)
+
+```
+19:        liquidStakingDerivativeFactory = _factory; // require(address(_factory) != address(0));
+```
