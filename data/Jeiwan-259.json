@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Jeiwan",
+  "risk": "2",
+  "title": "Updating whitelisted node runners always reverts",
+  "issueId": 259,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/259"
+}
