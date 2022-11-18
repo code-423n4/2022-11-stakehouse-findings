@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Trust",
+  "risk": "2",
+  "title": "dETH are branded as slash proof, but ETH2 slashing could make 32 deposit drop much below 24 (down to 0), making dETH undercollateralized",
+  "issueId": 433,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/433"
+}
