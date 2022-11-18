@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "Aits",
+  "risk": "2",
+  "title": "no reentrancy guard on ` mint() ` function that has a callback ",
+  "issueId": 401,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/401"
+}
