@@ -150,7 +150,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 ## Use Fixed-size `bytes32` instead of `string`
 Fitting your data in fixed-size 32 byte words is much cheaper than using arbitrary-length types (string in this case). Remember that bytes32 uses less gas because it fits in a single EVM word. Typically, any fixed size variable in solidity is cheaper than dynamically sized ones. 
 
-Here are some of the instances entailed:
+Here are the instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPTokenFactory.sol#L30-L31
 
@@ -429,6 +429,8 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L770
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L782
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L839
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L65
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L85
 
 Similarly, as an example, the following `-=` instance entailed may be refactored as follows:
 
@@ -773,7 +775,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 925:            uint256 daoAmount = (_received * _daoCommissionPercentage) / MODULO; // MLOAD 2
 ```
 ## Unneeded State Variable Cache
-The following instances of state variable caches is unnecessary since `currentAccumulatedETHPerFreeFloatingShare`, `updatedAccumulatedETHPerFreeFloatingShare`, and `stakedBal` are only referenced once in the function call.
+The following instances of state variable caches are unnecessary since `currentAccumulatedETHPerFreeFloatingShare`, `updatedAccumulatedETHPerFreeFloatingShare`, and `stakedBal` are only referenced once in the function call.
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L384-L396
 
@@ -792,7 +794,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
         return userShare - sETHUserClaimForKnot[_blsPubKey][_staker];
     }
 ```
-Similarly, the following instances of state variable caches is unnecessary since `staker` is dynamically different and referenced once on each iteration.
+Similarly, the following instances of state variable caches are unnecessary since `staker` is dynamically different and referenced once for each iteration.
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L585-L593
 
@@ -807,10 +809,35 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
             emit PriorityStakerRegistered(staker);
         }
 ```
+Similarly, the following instance of state variable cache is unnecessary since `claim` is only referenced once in the function call.
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L38-L45
+
+```
+            uint256 claim = claimed[_sender][_token];
+
+            uint256 received = totalRewardsReceived() + _unclaimedETHFromSyndicate;
+            uint256 unprocessed = received - totalETHSeen;
+
+            uint256 newAccumulatedETH = accumulatedETHPerLPShare + ((unprocessed * PRECISION) / _numOfShares);
+
+            return ((newAccumulatedETH * _balanceOfSender) / PRECISION) - claim;
+```
 ## Avoid Boolean Expressions Comparison to Boolean Literals in Conditional Checks
 You will save deployment gas by not comparing boolean expressions to boolean literals in the `if` or `require` statements.
 
-Here are the two instances entailed:
+For instance, the require conditional check instance below may have the code block refactored as follows by negating the boolean, `vault.isDETHReadyForWithdrawal(address(_lpTokens[i][j]))`, and removing `== false`: 
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L149-L152
+
+```
+                require(
+                    !vault.isDETHReadyForWithdrawal(address(_lpTokens[i][j])),
+                    "ETH is either staked or derivatives minted"
+                );
+```
+
+All other instances entailed:
 
 [File: SavETHVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVault.sol)
 
@@ -818,14 +845,6 @@ Here are the two instances entailed:
 64:            require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is not part of LSD network");
 
 84:        require(liquidStakingManager.isBLSPublicKeyBanned(_blsPublicKeyOfKnot) == false, "BLS public key is banned or not a part of LSD network");
-```
-https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantSavETHVaultPool.sol#L149-L152
-
-```
-                require(
-                    vault.isDETHReadyForWithdrawal(address(_lpTokens[i][j])) == false,
-                    "ETH is either staked or derivatives minted"
-                );
 ```
 [File: StakingFundsVault.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol)
 
@@ -839,7 +858,9 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L611-L612
 
 ```
+        // Could have negated `isKnotRegistered[_blsPublicKey]` and removed `== false`
         if (isKnotRegistered[_blsPublicKey] == false) revert KnotIsNotRegisteredWithSyndicate();
+        // Could have removed `== true`
         if (isNoLongerPartOfSyndicate[_blsPublicKey] == true) revert KnotHasAlreadyBeenDeRegistered();
 ```
 [File: LiquidStakingManager.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol)
@@ -853,7 +874,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 
 393:            require(isBLSPublicKeyBanned(_blsPubKeys[i]) == false, "BLS public key is banned or not a part of LSD network");
 
-436:        require(_isNodeRunnerValid(msg.sender) == true, "Unrecognised node runner");
+436:        require(_isNodeRunnerValid(msg.sender) == true, "Unrecognised node runner"); // Simply remove `== true`
 
 437:        require(isNodeRunnerBanned(msg.sender) == false, "Node runner is banned from LSD network");
 
@@ -863,7 +884,7 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/S
 
 589:            require(isBLSPublicKeyBanned(_blsPublicKeyOfKnots[i]) == false, "BLS public key is banned or not a part of LSD network");
 
-688:            require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner");
+688:            require(isNodeRunnerWhitelisted[_nodeRunner] == true, "Invalid node runner"); // Simply remove `== true`
 ```
 ## `abi.encode()` Costs More Gas Than `abi.encodePacked()`
 Changing `abi.encode()` to `abi.encodePacked()` can save gas considering the former pads extra null bytes at the end of the call data, which is unnecessary. Please visit the following the link delineating how `abi.encodePacked()` is more gas efficient in general:
@@ -882,7 +903,7 @@ Rule of thumb: `(x && y)` is `(!(!x || !y))`
 
 Even with the 10k Optimizer enabled: `||`, OR conditions cost less than their equivalent `&&`, AND conditions.
 
-For instance, the instance below that could be refactored as follows:
+For instance, the instance below could be refactored as follows:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVault.sol#L215
 
