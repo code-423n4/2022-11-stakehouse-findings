@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "satoshipotato",
+  "risk": "3",
+  "title": "Lack of safeguards on SavETHVaults - can lead to siphoning of user's funds to malicious contracts",
+  "issueId": 195,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/195"
+}
