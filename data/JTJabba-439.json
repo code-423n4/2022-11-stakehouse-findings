@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "JTJabba",
+  "risk": "2",
+  "title": "EOAs and system contracts can be blocked from some actions by continuously transferring them zero LP tokens",
+  "issueId": 439,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/439"
+}
