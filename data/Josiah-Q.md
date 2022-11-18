@@ -361,6 +361,6 @@ Here is 1 instance found.
 870:        sETH.approve(syndicate, (2 ** 256) - 1);
 ```
 ## INSUFFICIENT TESTING
-The repositories under review lack sufficient and appropriate testings, which increase the likelihood of errors in the development process and makes the code more difficult to review.
+The contracts in scope generally lack sufficient and proper testing, which increases the likelihood of errors in the development process, making the code difficult to review.
 
-Consider making sure that the unit tests cover all public functions at least once, as well as all known corner cases. Additionally, integrate coverage analysis tools into the development process and regularly review the coverage. It is crucial to have a full test coverage that includes the edge cases and failed scenarios that are at times hard to find with manual reviews.
+It is recommended ensuring that the unit tests cover all public functions at least once, as well as all known edge cases. Apart from that, integrate coverage analysis tools into the development process and regularly review the coverage. It is crucial to have a full test coverage that includes the edge cases and failed scenarios that are hard to find with manual reviews.
