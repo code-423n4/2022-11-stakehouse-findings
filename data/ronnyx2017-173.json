@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "ronnyx2017",
+  "risk": "3",
+  "title": "GiantMevAndFeesPool.bringUnusedETHBackIntoGiantPool function loses the addition of the idleETH which allows attackers to steal most of eth from the Giant Pool",
+  "issueId": 173,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/173"
+}
