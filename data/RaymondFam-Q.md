@@ -8,6 +8,7 @@ Here are the contract instances missing NatSpec in its entirety:
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/OptionalGatekeeperFactory.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SavETHVaultDeployer.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/StakingFundsVaultDeployer.sol
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/SyndicateErrors.sol
 
 Here are the function instances missing full or partial set of `@param`s:
 
@@ -200,6 +201,17 @@ https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-stak
 
 948:    function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 ```
+[File: SyndicateRewardsProcessor.sol](https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/SyndicateRewardsProcessor.sol)
+
+```
+30:    function _previewAccumulatedETH(
+
+51:    function _distributeETHRewardsToUserForToken(
+
+76:    function _updateAccumulatedETHPerLP(uint256 _numOfShares) internal {
+
+93:    function totalRewardsReceived() public virtual view returns (uint256) {
+```
 ## Unspecific Compiler Version Pragma
 For most source-units the compiler version pragma is very unspecific ^0.8.13. While this often makes sense for libraries to allow them to be included with multiple different versions of an application, it may be a security risk for the actual application implementation itself. A known vulnerable compiler version may accidentally be selected or security tools might fall-back to an older compiler version ending up actually checking a different EVM compilation that is ultimately deployed on the blockchain.
 
@@ -325,7 +337,7 @@ The use of `block.timestamp` as part of the time checks can be slightly altered 
 
 Consider taking into account this issue and warning the users that such a scenario could happen. If the alteration of timestamps cannot affect the protocol in any way, consider documenting the reasoning and writing tests enforcing that these guarantees will be preserved even if the code changes in the future.
 
-There are a total of four instances entailed:
+Here are the instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/GiantLP.sol#L44-L45
 
@@ -358,7 +370,7 @@ Adding the following line of code would ensure no shifting down of storage in th
 ```
     uint256[50] private __gap;
 ```
-Here are the three contract instances entailed:
+Here are the contract instances entailed:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol
@@ -381,7 +393,7 @@ This feature is readily incorporated in the Solidity Wizard since the UUPS vulne
         _disableInitializers();
     }
 ```
-Here are the three contract instances with missing `_disableInitializers()`:
+Here are the contract instances with missing `_disableInitializers()`:
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LPToken.sol#L27-L28
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/smart-wallet/OwnableSmartWallet.sol#L24-L25
