@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "rbserver",
+  "risk": "2",
+  "title": "Node runner who is already known to be malicious cannot be banned before corresponding smart wallet is created",
+  "issueId": 381,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/381"
+}
