@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "JTJabba",
+  "risk": "3",
+  "title": "`GiantMevAndFeesPool::afterTokenTransfer` doesn't update claimed amount of sender",
+  "issueId": 358,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/358"
+}
