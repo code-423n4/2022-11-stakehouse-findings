@@ -333,7 +333,7 @@ Here is a contract instance entailed:
 35:        require(msg.sender == pool, "Only pool");
 ```
 ## `block.timestamp` Unreliable
-The use of `block.timestamp` as part of the time checks can be slightly altered by miners/validators to favor them in contracts that have logic strongly dependent on them.
+The use of `block.timestamp` as part of the time checks can be slightly altered by miners/validators to favor them in contracts that have logic strongly dependent on them as part of the calculations and time checks.
 
 Consider taking into account this issue and warning the users that such a scenario could happen. If the alteration of timestamps cannot affect the protocol in any way, consider documenting the reasoning and writing tests enforcing that these guarantees will be preserved even if the code changes in the future.
 
@@ -590,3 +590,17 @@ Consider extending the timelock feature beyond contract ownership management to 
 
 948:    function _updateDAORevenueCommission(uint256 _commissionPercentage) internal {
 ```
+## `type(uint256).max` Over `2 ** 256 - 1`
+Consider using `type(uint256).max` instead of `(2 ** 256) - 1` when dealing with the maximum integer in Solidity. 
+
+Here is one instance entailed:
+
+https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/liquid-staking/LiquidStakingManager.sol#L870
+
+```
+        sETH.approve(syndicate, (2 ** 256) - 1);
+```
+## Inadequate Testing
+The repositories under review lack sufficient and appropriate testings, which increase the likelihood of errors in the development process and makes the code more difficult to review.
+
+Consider making sure that the unit tests cover all public functions at least once, as well as all known corner cases. Additionally, integrate coverage analysis tools into the development process and regularly review the coverage. It is crucial to have a full test coverage that includes the edge cases and failed scenarios that are at times hard to find with manual reviews.
