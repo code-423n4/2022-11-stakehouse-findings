@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "9svR6w",
+  "risk": "3",
+  "title": "Sender transferring GiantMevAndFeesPool tokens can afterward experience pool DOS and orphaning of future rewards",
+  "issueId": 178,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/178"
+}
