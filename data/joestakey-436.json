@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "joestakey",
+  "risk": "3",
+  "title": "Users of `StakingFundsVault` can never redeem their `LP token` once staking has started",
+  "issueId": 436,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/436"
+}
