@@ -1,11 +1,13 @@
-# Issue
+# 1 _addPriorityStakers() doesn't enforce duplicate array elements
+
+## Issue
 
 `_addPriorityStakers()` doesn't revert if array elements are equal when next to each other.
 Even though this can be written to publicly (when deploying a syndicate with `deploySyndicate` in `SyndicateFactory.sol`), they are no side effect as the same staker will only be written to `true` twice in the `isPriorityStaker` mapping, so submitted as low severity.
 
 https://github.com/code-423n4/2022-11-stakehouse/blob/main/contracts/syndicate/Syndicate.sol#L583
 
-# POC
+## POC
 
 ```solidity
 contract Syndicate is Test {
@@ -54,6 +56,71 @@ contract Syndicate is Test {
 }
 ```
 
-# Remedy
+## Remedy
 
 Should use `if (i > 0 && staker <= _priorityStakers[i-1]) revert DuplicateArrayElements();` instead.
+
+# 2 Nobody can get whitelisted in LSD manager
+
+## Issue
+
+In the `updateNodeRunnerWhitelistStatus()` function, nobody can get whitelisted because of a wrong checking.
+It should instead check from the function input arguments.
+
+## POC
+
+```solidity
+    function setUp() public {
+        vm.startPrank(accountFive); // this will mean it gets dETH initial supply
+        factory = createMockLSDNFactory();
+        vm.stopPrank();
+
+        // Deploy 1 network and get default dependencies
+        manager = deployNewLiquidStakingNetwork(
+            factory,
+            admin,
+            true,
+            "LSDN"
+        );
+
+        savETHVault = getSavETHVaultFromManager(manager);
+        stakingFundsVault = getStakingFundsVaultFromManager(manager);
+
+        // make 'admin' the 'DAO'
+        vm.prank(address(factory));
+        manager.updateDAOAddress(admin);
+    }
+
+    function testCannotWhitelist() public {
+        // Set up users and ETH
+        address nodeRunner = accountOne; vm.deal(nodeRunner, 4 ether);
+        // Node runner is not yet whitelisted
+        bool wl = manager.isNodeRunnerWhitelisted(nodeRunner);
+
+        // Prank as DAO
+        vm.startPrank(admin);
+
+        // Check by banning
+        vm.expectRevert(bytes("Unnecessary update to same status"));
+        manager.updateNodeRunnerWhitelistStatus(nodeRunner, false);
+
+        // Check with true ?
+        vm.expectRevert(bytes("Unnecessary update to same status"));
+        manager.updateNodeRunnerWhitelistStatus(nodeRunner, true);
+
+        // Both revert
+    }
+```
+
+## Remedy
+
+```solidity
+    function updateNodeRunnerWhitelistStatus(address _nodeRunner, bool isWhitelisted) external onlyDAO {
+        require(_nodeRunner != address(0), "Zero address");
+        // - require(isNodeRunnerWhitelisted[_nodeRunner] != isNodeRunnerWhitelisted[_nodeRunner], "Unnecessary update to same status");
+        + require(isWhitelisted != isNodeRunnerWhitelisted[_nodeRunner], "Unnecessary update to same status");
+
+        isNodeRunnerWhitelisted[_nodeRunner] = isWhitelisted;
+        emit NodeRunnerWhitelistingStatusChanged(_nodeRunner, isWhitelisted);
+    }
+```
