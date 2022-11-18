@@ -1,0 +1,8 @@
+{
+  "contest": 182,
+  "handle": "zaskoh",
+  "risk": "2",
+  "title": "returning wrong information for AccumulatedETH in GiantMevAndFeesPool.sol",
+  "issueId": 320,
+  "issueUrl": "https://github.com/code-423n4/2022-11-stakehouse-findings/issues/320"
+}
