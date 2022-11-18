@@ -198,6 +198,6 @@ The same is could be applied to the following cases:
 https://github.com/code-423n4/2022-11-stakehouse/blob/4b6828e9c807f2f7c569e6d721ca1289f7cf7112/contracts/liquid-staking/SyndicateRewardsProcessor.sol#L38
 
 
-All improvements are provided in the following GIST:
+### All improvements are provided in the following GIST:
 
 https://gist.github.com/MigueTripi/44ad962f22ac357e4ea81e4715b642ec
