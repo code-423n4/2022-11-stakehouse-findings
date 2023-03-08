@@ -1,3 +1,11 @@
+---
+sponsor: "Stakehouse Protocol"
+slug: "2022-11-stakehouse"
+date: "2023-01-20"
+title: "LSD Network - Stakehouse contest"
+findings: "https://github.com/code-423n4/2022-11-stakehouse-findings/issues"
+contest: 182
+---
 
 # Overview
 
